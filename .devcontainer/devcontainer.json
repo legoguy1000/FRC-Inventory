@@ -11,7 +11,8 @@
         "ms-vscode.vscode-typescript-next",
         "dsznajder.es7-react-js-snippets",
         "msjsdiag.vscode-react-native",
-        "EditorConfig.EditorConfig"
+        "EditorConfig.EditorConfig",
+        "ms-azuretools.vscode-docker"
       ]
     }
   },
