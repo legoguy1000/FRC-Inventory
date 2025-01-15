@@ -1,15 +1,12 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom/client';
-import { ThemeProvider } from '@mui/material/styles';
-import { CssBaseline } from '@mui/material';
-import theme from './theme';
+import { StyledEngineProvider } from '@mui/material/styles';
 import App from './Dashboard';
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
+ReactDOM.createRoot(document.querySelector("#root")!).render(
     <React.StrictMode>
-        <ThemeProvider theme={theme}>
-            <CssBaseline />
+        <StyledEngineProvider injectFirst>
             <App />
-        </ThemeProvider>
-    </React.StrictMode>,
+        </StyledEngineProvider>
+    </React.StrictMode>
 );
