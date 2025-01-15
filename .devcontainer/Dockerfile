@@ -1,6 +1,9 @@
 FROM node:23-alpine
 
-RUN apk update && apk add git
+RUN apk update && apk add git && \
+    npm install -g npm@11.0.0 @angular/cli
+
+
 # [Optional] Uncomment this section to install additional OS packages.
 # RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
 #     && apt-get -y install --no-install-recommends <your-package-list-here>
