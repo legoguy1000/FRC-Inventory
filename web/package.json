@@ -3,25 +3,27 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@fontsource/roboto": "^5.1.1",
+    "@mui/icons-material": "^6.3.1",
+    "@mui/material": "^6.3.1",
+    "@toolpad/core": "^0.12.0",
     "@types/react": "^19.0.4",
     "@types/react-dom": "^19.0.2",
     "cra-template": "1.2.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router": "^7.1.1",
-    "react-scripts": "5.0.1"
+    "react-router-dom": "^7.1.1"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
   },
   "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
+    "useEslintrc": true
   },
   "browserslist": {
     "production": [
@@ -34,5 +36,18 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@babel/core": "^7.26.0",
+    "@babel/eslint-parser": "^7.26.5",
+    "@vitejs/plugin-react-swc": "^3.7.2",
+    "eslint": "^9.18.0",
+    "eslint-plugin-react": "^7.37.3",
+    "eslint-plugin-react-refresh": "^0.4.18",
+    "typescript": "^5.7.3",
+    "vite": "^6.0.7",
+    "vite-plugin-checker": "^0.8.0",
+    "vite-plugin-eslint": "^1.8.1",
+    "vite-tsconfig-paths": "^5.1.4"
   }
 }
