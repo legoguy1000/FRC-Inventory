@@ -17,13 +17,16 @@ ReactDOM.createRoot(document.querySelector("#root")!).render(
                     <Route path="home" />
                     <Route path="login" element={<Login />} />
                     <Route path="dashboard" element={<MainDash />} />
-                    <Route path="parts">
-                        <Route index element={<PartsHome />} />
-                        <Route path=":pid" element={<Part />} />
-                        {/* <Route element={<PartsLayout />}>
+                    <Route path="inventory" />
+                    <Route path="admin">
+                        <Route path="parts">
+                            <Route index element={<PartsHome />} />
+                            <Route path=":pid" element={<Part />} />
+                            {/* <Route element={<PartsLayout />}>
                                 <Route path=":pid" element={<Project />} />
                                 <Route path=":pid/edit" element={<EditProject />} />
                             </Route> */}
+                        </Route>
                     </Route>
                 </Route>
                 <Route path="*" element={<Navigate replace to="/" />} />

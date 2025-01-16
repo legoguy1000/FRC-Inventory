@@ -16,7 +16,8 @@ import { NavLink, Link, useLocation } from "react-router";
 const mainListItems = [
     { text: 'Home', icon: <HomeRoundedIcon />, "page": "/home" },
     { text: 'Dashboard', icon: <AnalyticsRoundedIcon />, "page": "/dashboard" },
-    { text: 'Parts', icon: <HomeRepairServiceIcon />, "page": "/parts" },
+    { text: 'Parts', icon: <HomeRepairServiceIcon />, "page": "/admin/parts" },
+    { text: 'Inventory', icon: <HomeRepairServiceIcon />, "page": "/inventory" },
 ];
 
 const secondaryListItems = [

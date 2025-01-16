@@ -51,14 +51,10 @@ export default function NavbarBreadcrumbs() {
             pathArr[pathArr.length - 1] = pageTitle;
         }
         setBreadcrumbs(pathArr)
-        // breadcrumbs = generateBreadCrumbs(pathArr)
         document.title = `${pageTitle}`;
         NavService.setPageTitle("")
         console.log(breadcrumbs)
-        // Google Analytics
     }, [location]);
-
-
 
     return (
         <StyledBreadcrumbs
