@@ -4,6 +4,8 @@ import partRoutes from './routes/parts';
 import ProjectRoutes from './routes/projects';
 import InventoryRoutes from "./routes/inventory";
 import { prisma } from './prisma'
+import cors from "cors";
+
 
 dotenv.config();
 
@@ -15,6 +17,7 @@ const port = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use(express.urlencoded());
+app.use(cors());
 app.get("/", async (req: Request, res: Response) => {
     res.send("Express + TypeScript Server");
     const user = await prisma.user.create({

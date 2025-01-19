@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { createContext, useState } from 'react';
 import * as ReactDOM from 'react-dom/client';
 import { StyledEngineProvider } from '@mui/material/styles';
 import App from './App';
@@ -7,6 +7,18 @@ import MainDash from './pages/Dashboard';
 import Login from './pages/Login';
 import PartsHome from './pages/parts/PartsHome'
 import Part from './pages/parts/Part'
+
+export const NavTitleContext = createContext({ title: '', setTitle: (x: any) => { } });
+// Provide the context
+export const NavProvider = ({ children }) => {
+    const [title, setTitle] = useState('');
+
+    return (
+        <NavTitleContext.Provider value={{ title, setTitle }}>
+            {children}
+        </NavTitleContext.Provider>
+    );
+};
 
 ReactDOM.createRoot(document.querySelector("#root")!).render(
     // <React.StrictMode>

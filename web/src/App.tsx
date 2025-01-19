@@ -19,6 +19,7 @@ import {
     treeViewCustomizations,
 } from './theme/customizations';
 import { Outlet } from "react-router";
+import { NavProvider } from './main'
 
 const xThemeComponents = {
     ...chartsCustomizations,
@@ -34,34 +35,36 @@ export default function App(props: { disableCustomTheme?: boolean }) {
     //     return <Login setToken={setToken} />
     // }
     return (
-        <AppTheme {...props} themeComponents={xThemeComponents}>
-            <CssBaseline enableColorScheme />
-            <Box sx={{ display: 'flex' }}>
-                <SideMenu />
-                <AppNavbar />
-                {/* Main content */}
-                <Box
-                    component="main"
-                    sx={(theme) => ({
-                        flexGrow: 1,
-                        backgroundColor: alpha(theme.palette.background.default, 1),
-                        overflow: 'auto',
-                    })}
-                >
-                    <Stack
-                        spacing={2}
-                        sx={{
-                            alignItems: 'center',
-                            mx: 3,
-                            pb: 5,
-                            mt: { xs: 8, md: 0 },
-                        }}
+        <NavProvider>
+            <AppTheme {...props} themeComponents={xThemeComponents}>
+                <CssBaseline enableColorScheme />
+                <Box sx={{ display: 'flex' }}>
+                    <SideMenu />
+                    <AppNavbar />
+                    {/* Main content */}
+                    <Box
+                        component="main"
+                        sx={(theme) => ({
+                            flexGrow: 1,
+                            backgroundColor: alpha(theme.palette.background.default, 1),
+                            overflow: 'auto',
+                        })}
                     >
-                        <Header />
-                        <Outlet />
-                    </Stack>
+                        <Stack
+                            spacing={2}
+                            sx={{
+                                alignItems: 'center',
+                                mx: 3,
+                                pb: 5,
+                                mt: { xs: 8, md: 0 },
+                            }}
+                        >
+                            <Header />
+                            <Outlet />
+                        </Stack>
+                    </Box>
                 </Box>
-            </Box>
-        </AppTheme>
+            </AppTheme>
+        </NavProvider>
     );
 }

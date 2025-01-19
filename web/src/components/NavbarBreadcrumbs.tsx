@@ -1,11 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { styled } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import Breadcrumbs, { breadcrumbsClasses } from '@mui/material/Breadcrumbs';
 import NavigateNextRoundedIcon from '@mui/icons-material/NavigateNextRounded';
 import { useLocation } from 'react-router'
 import NavService from '../Services/NavigationService'
-import { p } from 'react-router/dist/development/fog-of-war-DLtn2OLr';
+import { NavTitleContext } from '../main'
 
 const StyledBreadcrumbs = styled(Breadcrumbs)(({ theme }) => ({
     margin: theme.spacing(1, 0),
@@ -42,19 +42,31 @@ function headerView() {
 export default function NavbarBreadcrumbs() {
     let location = useLocation();
     const [breadcrumbs, setBreadcrumbs] = useState([""]);
+    const [locationState, setLocation] = useState("");
+    const { title, setTitle } = useContext(NavTitleContext);
+    let currentTitle: string = "";
 
     useEffect(() => {
         const path = location.pathname;
         let pathArr = path.split("/").filter(item => item !== '');
-        const pageTitle = NavService.getPageTitle()
-        if (pageTitle !== "") {
-            pathArr[pathArr.length - 1] = pageTitle;
+        console.log(locationState)
+        console.log(path)
+        if (path != locationState) {
+            setLocation(path);
+            currentTitle = '';
+            setTitle('')
+            console.log(currentTitle)
+        } else {
+            if (title !== '') {
+                currentTitle = title;
+                pathArr[pathArr.length - 1] = currentTitle;
+            }
         }
+        setLocation(path);
         setBreadcrumbs(pathArr)
-        document.title = `${pageTitle}`;
-        NavService.setPageTitle("")
+        document.title = `${title}`;
         console.log(breadcrumbs)
-    }, [location]);
+    }, [location, title]);
 
     return (
         <StyledBreadcrumbs

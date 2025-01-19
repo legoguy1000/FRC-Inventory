@@ -6,6 +6,7 @@ import Button from '@mui/material/Button';
 import { Link } from 'react-router';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import Chip from '@mui/material/Chip';
+import PartService from '../../Services/PartService';
 
 
 function renderOpen(id: string) {
@@ -14,12 +15,23 @@ function renderOpen(id: string) {
     </Button>
 }
 
-function renderStatus(params: { total: number, available: number }) {
+function renderTotal(params: { _count: { inventory: number } }) {
+    if (params == null) {
+        return <div>0</div>;
+    }
+    return <div>{params._count.inventory}</div>
+
+}
+
+function renderStatus(params: { _count: { inventory: number }, inventory: [] }) {
     if (params == null) {
         return '';
     }
+    let percent = 0;
+    if (params._count.inventory != 0) {
+        percent = Math.floor(params.inventory.filter(x => x['projectId'] === null).length / params._count.inventory * 100)
+    }
     let color: 'success' | 'warning' | 'error';
-    let percent = Math.floor(params.available / params.total * 100)
     if (percent < 25) {
         color = "error";
     } else if (percent < 50) {
@@ -27,16 +39,26 @@ function renderStatus(params: { total: number, available: number }) {
     } else {
         color = "success"
     }
-
-
     return <Chip label={`${percent}%`} color={color} size="small" />;
 }
 
 export const columns: GridColDef[] = [
     { field: 'name', headerName: 'Part Name', flex: 1.5, minWidth: 200 },
     { field: 'location', headerName: 'Location', flex: 1.5, minWidth: 200 },
-    { field: 'total', headerName: 'Total Quantity', flex: 1.5, minWidth: 200 },
-    { field: 'available', headerName: 'Available', flex: 1.5, minWidth: 200 },
+    {
+        field: 'total',
+        headerName: 'Total Quantity',
+        flex: 1.5,
+        minWidth: 200,
+        valueGetter: (_, row) => row._count.inventory,
+    },
+    {
+        field: 'available',
+        headerName: 'Available',
+        flex: 1.5,
+        minWidth: 200,
+        valueGetter: (_, row) => row.inventory.filter(x => x.projectId === null).length,
+    },
     {
         field: 'status',
         headerName: 'Status',
@@ -56,15 +78,15 @@ export const columns: GridColDef[] = [
     },
 ];
 
-export const rows: GridRowsProp = [
-    {
-        id: 1,
-        name: "Vex Falcon 500",
-        location: "Falcon Motors Bin",
-        total: 100,
-        available: 12
-    },
-]
+// export const rows: GridRowsProp = [
+//     {
+//         id: 1,
+//         name: "Vex Falcon 500",
+//         location: "Falcon Motors Bin",
+//         total: 100,
+//         available: 12
+//     },
+// ]
 
 export default function PartsHome() {
     const [loading, setLoading] = useState(false);
@@ -78,7 +100,7 @@ export default function PartsHome() {
 
             // Await make wait until that
             // promise settles and return its result
-            const response: GridRowsProp = await new Promise(resolve => setTimeout(() => resolve(rows), 10000));
+            const response: GridRowsProp = await PartService.getParts();
             console.log(response)
             // // After fetching data stored it in posts state.
             setPosts(response);
