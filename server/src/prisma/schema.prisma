@@ -30,6 +30,8 @@ model Part {
     vendor    String
     name      String
     location  String
+    image_url String      @default("")
+    website   String      @default("")
     inventory Inventory[]
 
     @@unique([vendor, name])

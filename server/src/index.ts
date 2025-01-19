@@ -33,6 +33,8 @@ app.get("/", async (req: Request, res: Response) => {
                 name: "Falcon 500",
                 vendor: "Vex",
                 location: "Falcon Bin",
+                image_url: "https://store.ctr-electronics.com/cdn/shop/files/3__19352_1673993701_1280_1280.png?v=1723228114&width=416",
+                website: "https://store.ctr-electronics.com/products/falcon-500-powered-by-talon-fx"
             }
         });
         console.log(part);

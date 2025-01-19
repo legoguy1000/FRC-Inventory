@@ -1,5 +1,6 @@
 import { useState, useEffect, useContext } from 'react';
 import { useParams } from "react-router";
+import NavService from '../../Services/NavigationService'
 import PartService from '../../Services/PartService';
 import { NavTitleContext } from '../../main'
 import { Grid2, Stack } from '@mui/material';
@@ -8,7 +9,7 @@ import { Part as PartInterface } from '../../../../server/src/interfaces'
 export default function Part() {
     let params = useParams();
     const [loading, setLoading] = useState(false);
-    const [part, setPart] = useState<PartInterface>();
+    const [part, setPart] = useState<PartInterface>({});
     const { setTitle } = useContext(NavTitleContext);
 
     useEffect(() => {
@@ -19,7 +20,7 @@ export default function Part() {
 
             // Await make wait until that
             // promise settles and return its result
-            const response = await PartService.getPart(params.partId);
+            const response = await PartService.getPart(params.pid);
             console.log(response)
             // // After fetching data stored it in posts state.
             setPart(response);
@@ -39,7 +40,7 @@ export default function Part() {
                 {JSON.stringify(part)}
             </Stack>
             <Stack>
-                <img src={part?.image_url} />
+                <img src={part.image_url} />
             </Stack>
         </Grid2>
     )

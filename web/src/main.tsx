@@ -7,6 +7,7 @@ import MainDash from './pages/Dashboard';
 import Login from './pages/Login';
 import PartsHome from './pages/parts/PartsHome'
 import Part from './pages/parts/Part'
+import ProjectHome from './pages/projects/ProjectHome'
 
 export const NavTitleContext = createContext({ title: '', setTitle: (x: any) => { } });
 // Provide the context
@@ -33,11 +34,11 @@ ReactDOM.createRoot(document.querySelector("#root")!).render(
                     <Route path="admin">
                         <Route path="parts">
                             <Route index element={<PartsHome />} />
-                            <Route path=":pid" element={<Part />} />
-                            {/* <Route element={<PartsLayout />}>
-                                <Route path=":pid" element={<Project />} />
-                                <Route path=":pid/edit" element={<EditProject />} />
-                            </Route> */}
+                            <Route path=":partId" element={<Part />} />
+                        </Route>
+                        <Route path="projects">
+                            <Route index element={<ProjectHome />} />
+                            <Route path=":projectId" />
                         </Route>
                     </Route>
                 </Route>

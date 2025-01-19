@@ -6,67 +6,24 @@ import Button from '@mui/material/Button';
 import { Link } from 'react-router';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import Chip from '@mui/material/Chip';
-import PartService from '../../Services/PartService';
-import { Part as PartInterface, Inventory as InventoryInterface } from '../../../../server/src/interfaces'
+import { Project as ProjectInterface } from '../../../../server/src/interfaces'
+import ProjectService from '../../Services/ProjectService';
 
 
 function renderOpen(id: string) {
-    return <Button component={Link} to={`/admin/parts/${id}`} variant='text'>
+    return <Button component={Link} to={`/admin/projects/${id}`} variant='text'>
         <OpenInNewIcon />
     </Button>
 }
 
-function renderTotal(params: PartInterface) {
-    if (params == null) {
-        return <div>0</div>;
-    }
-    return <div>{params._count?.inventory}</div>
-
-}
-
-function renderStatus(params: PartInterface) {
-    if (params == null || params._count?.inventory === undefined || params.inventory === undefined) {
-        return '';
-    }
-    let percent = 0;
-    if (params._count?.inventory != 0) {
-        percent = Math.floor(params.inventory?.filter(x => x.projectId === null).length / params._count?.inventory * 100)
-    }
-    let color: 'success' | 'warning' | 'error';
-    if (percent < 25) {
-        color = "error";
-    } else if (percent < 50) {
-        color = "warning";
-    } else {
-        color = "success"
-    }
-    return <Chip label={`${percent}%`} color={color} size="small" />;
-}
-
 export const columns: GridColDef[] = [
-    { field: 'vendor', headerName: 'Vendor', flex: 1.5, minWidth: 200 },
-    { field: 'name', headerName: 'Part Name', flex: 1.5, minWidth: 200 },
-    { field: 'location', headerName: 'Location', flex: 1.5, minWidth: 200 },
+    { field: 'name', headerName: 'Project Name', flex: 1.5, minWidth: 200 },
     {
-        field: 'total',
-        headerName: 'Total Quantity',
+        field: '_parts',
+        headerName: 'Number of allocated parts',
         flex: 1.5,
         minWidth: 200,
         valueGetter: (_, row) => row._count.inventory,
-    },
-    {
-        field: 'available',
-        headerName: 'Available',
-        flex: 1.5,
-        minWidth: 200,
-        valueGetter: (_, row) => row.inventory.filter((x: InventoryInterface) => x.projectId === null).length,
-    },
-    {
-        field: 'status',
-        headerName: 'Status',
-        flex: 1,
-        minWidth: 80,
-        renderCell: (params) => renderStatus(params.row as any),
     },
     {
         field: '',
@@ -80,19 +37,9 @@ export const columns: GridColDef[] = [
     },
 ];
 
-// export const rows: GridRowsProp = [
-//     {
-//         id: 1,
-//         name: "Vex Falcon 500",
-//         location: "Falcon Motors Bin",
-//         total: 100,
-//         available: 12
-//     },
-// ]
-
-export default function PartsHome() {
+export default function ProjectsHome() {
     const [loading, setLoading] = useState(false);
-    const [data, setData] = useState<PartInterface[]>([]);
+    const [data, setData] = useState<ProjectInterface[]>([]);
 
     useEffect(() => {
         const loadPost = async () => {
@@ -102,7 +49,7 @@ export default function PartsHome() {
 
             // Await make wait until that
             // promise settles and return its result
-            const response: PartInterface[] = await PartService.getParts();
+            const response: ProjectInterface[] = await ProjectService.getProjects();
             console.log(response)
             // // After fetching data stored it in posts state.
             setData(response);
