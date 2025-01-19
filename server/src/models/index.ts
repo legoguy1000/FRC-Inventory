@@ -1,11 +1,13 @@
 import { User } from "./user";
 import { Project } from "./project";
 import { Part } from "./part";
-import { sequelize } from "../sequelizeClient";
+import { Inventory } from "./inventory";
 
-Project.hasMany(Part);
-Part.belongsTo(Project);
+Project.hasMany(Inventory);
+Inventory.belongsTo(Project);
+Inventory.belongsTo(Part);
+Part.hasMany(Inventory);
 
-sequelize.sync({ force: true });
 
-export { User, Project, Part }
+
+export { User, Project, Part, Inventory }

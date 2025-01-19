@@ -1,11 +1,13 @@
 import { Model, DataTypes, CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize';
 import { sequelize } from '../sequelizeClient';
-import { Part } from './part';
+import { PartModel } from './part';
+import { InventoryModel } from './inventory';
 
-interface ProjectModel extends Model<InferAttributes<ProjectModel>, InferCreationAttributes<ProjectModel>> {
+interface ProjectModel extends Model<InferAttributes<ProjectModel, { omit: 'addInventory' }>, InferCreationAttributes<ProjectModel>> {
     // Some fields are optional when calling UserModel.create() or UserModel.build()
     id: CreationOptional<string>;
     name: string;
+    addInventory: (part: InventoryModel | string) => string;
 }
 
 const Project = sequelize.define<ProjectModel>('project', {

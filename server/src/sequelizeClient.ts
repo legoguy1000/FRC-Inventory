@@ -16,6 +16,7 @@ const initDB = async () => {
         console.error('Unable to connect to the database:', error);
     }
 }
+initDB();
 
 export { initDB, sequelize }
 
