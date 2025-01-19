@@ -5,8 +5,8 @@ import { Inventory } from "./inventory";
 
 Project.hasMany(Inventory);
 Inventory.belongsTo(Project);
-Inventory.belongsTo(Part);
 Part.hasMany(Inventory);
+Inventory.belongsTo(Part);
 
 
 
