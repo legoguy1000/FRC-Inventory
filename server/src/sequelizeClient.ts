@@ -7,16 +7,16 @@ const host = process.env.DB_HOST || "db";
 const port = process.env.DB_PORT || 5432;
 const dbname = process.env.DB_NAME || "postgres";
 
-let sequelize: Sequelize = new Sequelize(`${driver}://${user}:${password}@${host}:${port}/${dbname}`) // Example for postgres
-const initDB = async () => {
-    try {
-        await sequelize.authenticate();
-        console.log('Connection has been established successfully.');
-    } catch (error) {
-        console.error('Unable to connect to the database:', error);
-    }
-}
-initDB();
+// let sequelize: Sequelize = new Sequelize(`${driver}://${user}:${password}@${host}:${port}/${dbname}`) // Example for postgres
+// const initDB = async () => {
+//     try {
+//         await sequelize.authenticate();
+//         console.log('Connection has been established successfully.');
+//     } catch (error) {
+//         console.error('Unable to connect to the database:', error);
+//     }
+// }
+// initDB();
 
-export { initDB, sequelize }
+// export { initDB, sequelize }
 

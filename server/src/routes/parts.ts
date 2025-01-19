@@ -1,18 +1,18 @@
 import express, { Request, Response } from "express";
-import { Sequelize, Op } from "sequelize";
-
-import { Inventory, Project } from "../models";
-import { Part } from "../models";
-import { InventoryModel } from "../models/inventory";
-import { PartModel } from "../models/part";
+import { prisma } from '../prisma'
 
 const router = express.Router();
 
-interface InventoryA extends PartModel {
-    available?: number;
-}
+
 router.get("/", async (req: Request, res: Response) => {
-    const parts = await Part.findAll({ include: [Inventory] });
+    const parts = await prisma.part.findMany({
+        include: {
+            inventory: true,
+            _count: {
+                select: { inventory: true },
+            },
+        }
+    });
     res.send(parts);
 });
 export default router;
