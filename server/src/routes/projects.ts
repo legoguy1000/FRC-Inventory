@@ -35,7 +35,7 @@ router.post("/", async (req: Request, res: Response) => {
     }
 
 });
-router.put("/:projectId", async (req: Request, res: Response) => {
+router.put("/:projectId([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})", async (req: Request, res: Response) => {
     const projectId = req.params.projectId;
     try {
         await prisma.project.findFirstOrThrow({ where: { id: projectId } });
@@ -72,7 +72,7 @@ router.put("/:projectId", async (req: Request, res: Response) => {
     }
 
 });
-router.delete("/:projectId", async (req: Request, res: Response) => {
+router.delete("/:projectId([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})", async (req: Request, res: Response) => {
     const projectId = req.params.projectId;
     try {
         await prisma.project.findFirstOrThrow({ where: { id: projectId } });
@@ -101,7 +101,7 @@ router.delete("/:projectId", async (req: Request, res: Response) => {
     }
 
 });
-router.get("/:projectId/inventory", async (req: Request, res: Response) => {
+router.get("/:projectId([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/inventory", async (req: Request, res: Response) => {
     const projectId = req.params.projectId;
 
     try {

@@ -5,7 +5,7 @@ import App from './App';
 import { BrowserRouter, Routes, Route, Navigate } from "react-router";
 import MainDash from './pages/Dashboard';
 import Login from './pages/Login';
-import PartsHome from './pages/parts/PartsHome'
+import PartsHome from './pages/parts/Parts'
 import Part from './pages/parts/Part'
 import ProjectHome from './pages/projects/Projects'
 import './main.css'

@@ -2,9 +2,10 @@ interface Part {
     id: string;
     vendor: string;
     name: string;
+    category: string;
     location: string | undefined;
-    image_url: string | undefined;
-    website: string | undefined;
+    image_url?: string | undefined;
+    website?: string | undefined;
     inventory?: Inventory[];
     createdAt: Date;
     updatedAt: Date;

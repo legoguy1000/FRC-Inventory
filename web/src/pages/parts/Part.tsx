@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from 'react';
 import { useParams } from "react-router";
-import PartService from '../../Services/PartService';
+import { PartService } from '../../Services/PartService';
 import { NavTitleContext } from '../../App'
 import { Grid2, Stack } from '@mui/material';
 import { Part as PartInterface } from '../../../../server/src/interfaces'

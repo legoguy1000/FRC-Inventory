@@ -1,7 +1,5 @@
 import axios from 'axios';
 import { config, API_ENPOINT } from './config';
-import { Project } from '../../../server/src/interfaces';
-
 
 const ProjectService = {
     getProjects: async () => {

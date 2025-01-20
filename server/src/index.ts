@@ -30,9 +30,10 @@ app.get("/", async (req: Request, res: Response) => {
     try {
         const part = await prisma.part.create({
             data: {
-                name: "Falcon 500",
-                vendor: "Vex",
+                name: "Spark max",
+                vendor: "Rev",
                 location: "Falcon Bin",
+                category: "electronics",
                 image_url: "https://store.ctr-electronics.com/cdn/shop/files/3__19352_1673993701_1280_1280.png?v=1723228114&width=416",
                 website: "https://store.ctr-electronics.com/products/falcon-500-powered-by-talon-fx"
             }

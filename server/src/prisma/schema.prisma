@@ -35,6 +35,7 @@ model Part {
     id        String      @id @default(uuid())
     vendor    String
     name      String
+    category  String      @default("other")
     location  String
     image_url String      @default("")
     website   String      @default("")
