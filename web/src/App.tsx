@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { createContext, useState } from 'react';
 import type { } from '@mui/x-date-pickers/themeAugmentation';
 import type { } from '@mui/x-charts/themeAugmentation';
 import type { } from '@mui/x-data-grid/themeAugmentation';
@@ -9,7 +9,6 @@ import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import AppNavbar from './components/AppNavbar';
 import Header from './components/Header';
-import MainGrid from './pages/Dashboard';
 import SideMenu from './components/SideMenu';
 import AppTheme from './theme/AppTheme';
 import {
@@ -19,7 +18,6 @@ import {
     treeViewCustomizations,
 } from './theme/customizations';
 import { Outlet } from "react-router";
-import { NavProvider } from './main'
 
 const xThemeComponents = {
     ...chartsCustomizations,
@@ -28,12 +26,21 @@ const xThemeComponents = {
     ...treeViewCustomizations,
 };
 
-export default function App(props: { disableCustomTheme?: boolean }) {
-    const [token, setToken] = React.useState();
+export const NavTitleContext = createContext({ title: '', setTitle: (x: any) => { } });
+// Provide the context
+export const NavProvider = ({ children }) => {
+    const [title, setTitle] = useState('');
 
-    // if (!token) {
-    //     return <Login setToken={setToken} />
-    // }
+    return (
+        <NavTitleContext.Provider value={{ title, setTitle }}>
+            {children}
+        </NavTitleContext.Provider>
+    );
+};
+
+export default function App(props: { disableCustomTheme?: boolean }) {
+    const [token, setToken] = useState();
+
     return (
         <NavProvider>
             <AppTheme {...props} themeComponents={xThemeComponents}>

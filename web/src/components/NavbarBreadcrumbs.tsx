@@ -5,7 +5,7 @@ import Breadcrumbs, { breadcrumbsClasses } from '@mui/material/Breadcrumbs';
 import NavigateNextRoundedIcon from '@mui/icons-material/NavigateNextRounded';
 import { useLocation } from 'react-router'
 import NavService from '../Services/NavigationService'
-import { NavTitleContext } from '../main'
+import { NavTitleContext } from '../App'
 
 const StyledBreadcrumbs = styled(Breadcrumbs)(({ theme }) => ({
     margin: theme.spacing(1, 0),

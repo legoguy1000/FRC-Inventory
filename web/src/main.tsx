@@ -9,18 +9,6 @@ import PartsHome from './pages/parts/PartsHome'
 import Part from './pages/parts/Part'
 import ProjectHome from './pages/projects/ProjectHome'
 
-export const NavTitleContext = createContext({ title: '', setTitle: (x: any) => { } });
-// Provide the context
-export const NavProvider = ({ children }) => {
-    const [title, setTitle] = useState('');
-
-    return (
-        <NavTitleContext.Provider value={{ title, setTitle }}>
-            {children}
-        </NavTitleContext.Provider>
-    );
-};
-
 ReactDOM.createRoot(document.querySelector("#root")!).render(
     // <React.StrictMode>
     <StyledEngineProvider injectFirst>
