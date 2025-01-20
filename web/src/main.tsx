@@ -8,6 +8,7 @@ import Login from './pages/Login';
 import PartsHome from './pages/parts/PartsHome'
 import Part from './pages/parts/Part'
 import ProjectHome from './pages/projects/ProjectHome'
+import './main.css'
 
 ReactDOM.createRoot(document.querySelector("#root")!).render(
     // <React.StrictMode>

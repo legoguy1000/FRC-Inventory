@@ -26,6 +26,8 @@ interface Inventory {
 interface Project {
     id: string;
     name: string;
+    owner?: string;
+    retired: boolean;
     _count?: {
         inventory?: number;
     }

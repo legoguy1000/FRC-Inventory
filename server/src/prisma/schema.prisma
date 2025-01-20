@@ -22,6 +22,8 @@ model User {
 model Project {
     id        String      @id @default(uuid())
     name      String
+    owner     String?
+    retired   Boolean     @default(false)
     inventory Inventory[]
 }
 

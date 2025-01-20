@@ -55,6 +55,7 @@ export default function App(props: { disableCustomTheme?: boolean }) {
                             flexGrow: 1,
                             backgroundColor: alpha(theme.palette.background.default, 1),
                             overflow: 'auto',
+                            height: '100%'
                         })}
                     >
                         <Stack
@@ -64,6 +65,7 @@ export default function App(props: { disableCustomTheme?: boolean }) {
                                 mx: 3,
                                 pb: 5,
                                 mt: { xs: 8, md: 0 },
+                                height: '100%'
                             }}
                         >
                             <Header />
