@@ -14,9 +14,11 @@ datasource db {
 }
 
 model User {
-    id         String @id @default(uuid())
+    id         String   @id @default(uuid())
     first_name String
     last_name  String
+    createdAt  DateTime @default(now())
+    updatedAt  DateTime @default(now()) @updatedAt
 }
 
 model Project {
@@ -25,6 +27,8 @@ model Project {
     owner     String?
     retired   Boolean     @default(false)
     inventory Inventory[]
+    createdAt DateTime    @default(now())
+    updatedAt DateTime    @default(now()) @updatedAt
 }
 
 model Part {
@@ -35,6 +39,8 @@ model Part {
     image_url String      @default("")
     website   String      @default("")
     inventory Inventory[]
+    createdAt DateTime    @default(now())
+    updatedAt DateTime    @default(now()) @updatedAt
 
     @@unique([vendor, name])
 }
@@ -47,6 +53,8 @@ model Inventory {
     status    String?
     partId    String
     projectId String?
-    part      Part      @relation(fields: [partId], references: [id])
-    project   Project?  @relation(fields: [projectId], references: [id])
+    part      Part      @relation(fields: [partId], references: [id], onDelete: Restrict)
+    project   Project?  @relation(fields: [projectId], references: [id], onDelete: Restrict)
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @default(now()) @updatedAt
 }

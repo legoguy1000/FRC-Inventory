@@ -7,7 +7,7 @@ import MainDash from './pages/Dashboard';
 import Login from './pages/Login';
 import PartsHome from './pages/parts/PartsHome'
 import Part from './pages/parts/Part'
-import ProjectHome from './pages/projects/ProjectHome'
+import ProjectHome from './pages/projects/Projects'
 import './main.css'
 
 ReactDOM.createRoot(document.querySelector("#root")!).render(
@@ -16,7 +16,7 @@ ReactDOM.createRoot(document.querySelector("#root")!).render(
         <BrowserRouter>
             <Routes>
                 <Route path="/" element={<App disableCustomTheme={true} />}>
-                    <Route path="home" />
+                    <Route path="home" index />
                     <Route path="login" element={<Login />} />
                     <Route path="dashboard" element={<MainDash />} />
                     <Route path="inventory" />
@@ -30,8 +30,8 @@ ReactDOM.createRoot(document.querySelector("#root")!).render(
                             <Route path=":projectId" />
                         </Route>
                     </Route>
+                    <Route path="*" element={<Navigate replace to="/home" />} />
                 </Route>
-                <Route path="*" element={<Navigate replace to="/" />} />
             </Routes>
         </BrowserRouter>
     </StyledEngineProvider>
