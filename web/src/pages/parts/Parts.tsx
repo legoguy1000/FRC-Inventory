@@ -520,7 +520,7 @@ export default function ProjectsHome() {
                             {bulkAdd.data.map(x => {
                                 return (
                                     <ListItem>
-                                        <Alert severity={x.error ? "error" : "success"}>
+                                        <Alert severity={x.error ? "error" : "success"} style={{ width: '100%' }}>
                                             {x.message}
                                         </Alert>
                                     </ListItem>
