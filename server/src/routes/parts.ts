@@ -1,4 +1,5 @@
 import express, { Request, Response } from "express";
+import { AsyncParser } from '@json2csv/node';
 import { prisma } from '../prisma'
 import { Part } from '../interfaces'
 
@@ -24,7 +25,18 @@ router.post("/", async (req: Request, res: Response) => {
         }
     }
     const { vendor, name, location, category, image_url, website } = req.body;
-    const parts = await prisma.part.findMany({ where: { name: name, vendor: vendor } });
+    const parts = await prisma.part.findMany({
+        where: {
+            name: {
+                equals: name,
+                mode: 'insensitive', // Default value: default
+            },
+            vendor: {
+                equals: vendor,
+                mode: 'insensitive', // Default value: default
+            },
+        }
+    });
     if (parts.length > 0) {
         res.status(400).send({ error: true, message: `Part ${vendor} ${name} already exists. Part vendor & names muct be unique.`, data: { field: 'name' } })
         return;
@@ -54,7 +66,18 @@ router.post("/bulk", async (req: Request, res: Response) => {
         return;
     }
     for (const [_, part] of parts.entries()) {
-        let part_check = await prisma.part.findMany({ where: { name: part.name, vendor: part.vendor } });
+        let part_check = await prisma.part.findMany({
+            where: {
+                name: {
+                    equals: part.name,
+                    mode: 'insensitive', // Default value: default
+                },
+                vendor: {
+                    equals: part.vendor,
+                    mode: 'insensitive', // Default value: default
+                },
+            }
+        });
         if (part_check.length > 0) {
             response.push({ error: true, message: `Part ${part.vendor} ${part.name} already exists. Part vendor & names muct be unique.` })
             continue;
@@ -82,6 +105,25 @@ router.post("/bulk", async (req: Request, res: Response) => {
         message += " Some errors occured. Please see the response for more details"
     }
     res.status(status).send({ error: error, message: message, data: response });
+});
+router.get("/export", async (req: Request, res: Response) => {
+    let parts = await prisma.part.findMany({
+        select: {
+            vendor: true,
+            name: true,
+            category: true,
+            location: true,
+            image_url: true,
+            website: true,
+        }
+    });
+    let date = new Date();
+    const opts = {};
+    const transformOpts = {};
+    const asyncOpts = {};
+    const parser = new AsyncParser(opts, asyncOpts, transformOpts);
+    const csv = await parser.parse(parts).promise();
+    res.setHeader('Content-disposition', `attachment; filename=parts-export-${date.toISOString()}.csv`).set('Content-Type', 'text/csv').send(csv)
 });
 router.get("/categories", async (req: Request, res: Response) => {
     let categories = await prisma.part.findMany({

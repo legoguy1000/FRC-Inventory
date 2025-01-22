@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import Chip from '@mui/material/Chip';
 import { Part as PartInterface, Inventory as InventoryInterface, Part } from '../../../../server/src/interfaces'
-import { PartService, PartCreate } from '../../Services';
+import { PartService, PartCreate, API_ENPOINT } from '../../Services';
 import { Stack } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -29,6 +29,7 @@ import LinearProgress from '@mui/material/LinearProgress';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import Autocomplete from '@mui/material/Autocomplete';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import Alert from '@mui/material/Alert';
@@ -141,6 +142,9 @@ export default function ProjectsHome() {
         };
         return (
             <GridToolbarContainer>
+                <Tooltip title="Export current parts list to CSV">
+                    <Button color="primary" startIcon={<CloudDownloadIcon />} href={`${API_ENPOINT}/parts/export`} target='_blank' />
+                </Tooltip>
                 <Tooltip title="Uploade Parts List">
                     <Button color='primary' startIcon={<CloudUploadIcon />}
                         component="label"
@@ -166,7 +170,10 @@ export default function ProjectsHome() {
                                         const array = csvRows.map((i: string) => {
                                             const values = i.split(",");
                                             const obj = csvHeader.reduce((object, header, index) => {
-                                                object[header] = values[index];
+                                                if (header === undefined || values[index] === undefined) {
+                                                    return object;
+                                                }
+                                                object[header.trim()] = values[index].trim();
                                                 return object;
                                             }, {});
                                             return obj;
@@ -334,7 +341,7 @@ export default function ProjectsHome() {
                 initialState={{
                     pagination: { paginationModel: { pageSize: 20 } },
                     sorting: {
-                        sortModel: [{ field: 'createdAt', sort: 'desc' }],
+                        sortModel: [{ field: 'vendor', sort: 'asc' }],
                     },
                 }}
                 autosizeOptions={{
@@ -530,7 +537,10 @@ export default function ProjectsHome() {
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={closeDialog} autoFocus>close</Button>
+                    <Button onClick={() => {
+                        closeDialog();
+                        loadParts();
+                    }} autoFocus>close</Button>
                 </DialogActions>
             </Dialog>
         </Stack >

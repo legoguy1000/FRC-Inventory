@@ -8,6 +8,7 @@ import Login from './pages/Login';
 import PartsHome from './pages/parts/Parts'
 import Part from './pages/parts/Part'
 import ProjectHome from './pages/projects/Projects'
+import Inventory from './pages/inventory/Inventory'
 import './main.css'
 
 ReactDOM.createRoot(document.querySelector("#root")!).render(
@@ -19,7 +20,7 @@ ReactDOM.createRoot(document.querySelector("#root")!).render(
                     <Route path="home" index />
                     <Route path="login" element={<Login />} />
                     <Route path="dashboard" element={<MainDash />} />
-                    <Route path="inventory" />
+                    <Route path="inventory" element={<Inventory />} />
                     <Route path="admin">
                         <Route path="parts">
                             <Route index element={<PartsHome />} />
