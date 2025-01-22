@@ -33,6 +33,9 @@ import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import Alert from '@mui/material/Alert';
+import InputAdornment from '@mui/material/InputAdornment';
+import IconButton from '@mui/material/IconButton';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 
 
 function renderStatus(params: PartInterface) {
@@ -397,9 +400,9 @@ export default function ProjectsHome() {
                         let resp;
                         console.log(formJson)
                         if (formJson.id !== undefined && formJson.id !== '') {
-                            resp = await PartService.editPart(formJson.id, { name: formJson.name, vendor: formJson.vendor, category: formJson.category, location: formJson.location });
+                            resp = await PartService.editPart(formJson.id, { name: formJson.name, vendor: formJson.vendor, category: formJson.category, location: formJson.location, image_url: formJson.image_url, website: formJson.website });
                         } else {
-                            resp = await PartService.addPart({ name: formJson.name, vendor: formJson.vendor, category: formJson.category, location: formJson.location });
+                            resp = await PartService.addPart({ name: formJson.name, vendor: formJson.vendor, category: formJson.category, location: formJson.location, image_url: formJson.image_url, website: formJson.website });
                         }
                         setEditLoading(false);
                         if (!resp.error) {
@@ -477,7 +480,21 @@ export default function ProjectsHome() {
                         defaultValue={editPart?.website === null ? '' : editPart?.website}
                         error={editError?.data?.field === 'website'}
                         helperText={editError?.message}
+                        slotProps={{
+                            input: {
+                                endAdornment:
+                                    < InputAdornment position="end" >
+                                        <IconButton edge="end" href={editPart?.website !== undefined ? editPart?.website : ''} target='_blank'>
+                                            <OpenInNewIcon />
+                                        </IconButton>
+                                    </InputAdornment>
+                            },
+                        }}
                     />
+                    <img src={editPart?.image_url} style={{ maxWidth: '300px' }} />
+                    {/* <Button variant="contained">
+                        Next
+                    </Button> */}
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={closeDialog}>Cancel</Button>
