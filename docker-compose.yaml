@@ -12,6 +12,8 @@ services:
   backend:
     image: ${SERVER_IMAGE}
     pull_policy: always
+    depends_on:
+      - db
     # build:
     #   context: ./server
     #   dockerfile: Dockerfile.server
