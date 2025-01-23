@@ -10,7 +10,8 @@
     "start": "node --env-file=.env dist/index.js",
     "build": "npx tsc",
     "migrate:dev": "npx prisma migrate dev --schema=./src/prisma/schema.prisma",
-    "migrate:prod": "npx prisma migrate deploy --schema=./src/prisma/schema.prisma"
+    "migrate:prod": "npx prisma migrate deploy --schema=./src/prisma/schema.prisma",
+    "prisma:generate": "npx prisma generate --schema=./src/prisma/schema.prisma"
   },
   "repository": {
     "type": "git",
