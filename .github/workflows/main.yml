@@ -62,7 +62,7 @@ jobs:
   deploy:
     name: Deploy
     # The type of runner that the job will run on
-    runs-on: self-hosted
+    runs-on: test
     needs:
       - build-server-image
       - build-web-image
