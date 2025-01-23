@@ -131,7 +131,7 @@ router.get("/categories", async (req: Request, res: Response) => {
             category: true
         }
     });
-    let filtered_categories = Array.from(new Set(categories.map(x => x.category.toLocaleLowerCase())));
+    let filtered_categories = Array.from(new Set(categories.map((x: { category: string }) => x.category.toLocaleLowerCase())));
     res.send(filtered_categories)
 });
 router.get("/locations", async (req: Request, res: Response) => {
@@ -140,7 +140,7 @@ router.get("/locations", async (req: Request, res: Response) => {
             location: true
         }
     });
-    let filtered_location = Array.from(new Set(locations.map(x => x.location.toLocaleLowerCase())));
+    let filtered_location = Array.from(new Set(locations.map((x: { location: string }) => x.location.toLocaleLowerCase())));
     res.send(filtered_location)
 });
 
