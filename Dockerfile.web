@@ -3,6 +3,7 @@ FROM node:23-alpine as build
 
 WORKDIR /opt/inventory
 COPY ./web ./server ./
+WORKDIR /opt/inventory/web
 RUN apk update && npm i -g vite && npm install && npm run build
 
 FROM nginx:1-alpine
