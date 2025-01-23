@@ -35,7 +35,7 @@ jobs:
     - name: Build and push Web Image
       uses: docker/build-push-action@v6
       with:
-        context: "./web"
+        context: "./"
         file: "./Dockerfile.web"
         push: true
         tags: ${{ env.REGISTRY }}/${{ env.WEB_IMAGE_PATH }}:${{ github.ref_name }}
