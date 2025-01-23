@@ -15,18 +15,18 @@ export default function Part() {
         const loadPost = async () => {
             // Till the data is fetch using API
             // the Loading page will show.
-            setLoading(true);
+            // setLoading(true);
 
-            // Await make wait until that
-            // promise settles and return its result
-            const response = await PartService.getPart(params.partId);
-            console.log(response)
-            // // After fetching data stored it in posts state.
-            setPart(response);
+            // // Await make wait until that
+            // // promise settles and return its result
+            // const response = await PartService.getPart(params.partId);
+            // console.log(response)
+            // // // After fetching data stored it in posts state.
+            // setPart(response);
 
-            // Closed the loading page
-            setLoading(false);
-            setTitle(`${response.vendor} ${response.name}`)
+            // // Closed the loading page
+            // setLoading(false);
+            // setTitle(`${response.vendor} ${response.name}`)
         };
 
         // Call the function

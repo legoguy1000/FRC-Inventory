@@ -124,6 +124,8 @@ const VisuallyHiddenInput = styled('input')({
 const DELETE_PROJET_TOOLTIP = "Delete Part"
 const DELETE_PROJET_TOOLTIP_ERROR = "Part cannot be deleted while there is an active inventory"
 
+type PartFields = "id" | "vendor" | "name" | "category";
+
 export default function ProjectsHome() {
     const [loading, setLoading] = useState(false);
     const [editLoading, setEditLoading] = useState(false);
@@ -170,19 +172,19 @@ export default function ProjectsHome() {
                                         const csvHeader = text.slice(0, text.indexOf("\n")).split(",");
                                         const csvRows = text.slice(text.indexOf("\n") + 1).split("\n");
 
-                                        const array = csvRows.map((i: string) => {
+                                        const array: Part[] = csvRows.map((i: string) => {
                                             const values = i.split(",");
-                                            const obj = csvHeader.reduce((object, header, index) => {
+                                            const obj: Part = csvHeader.reduce<Part>((object, header, index: number) => {
                                                 if (header === undefined || values[index] === undefined) {
                                                     return object;
                                                 }
-                                                object[header.trim()] = values[index].trim();
+                                                object[header.trim() as PartFields] = values[index].trim();
                                                 return object;
-                                            }, {});
+                                            }, {} as Part);
                                             return obj;
                                         });
                                         console.log(array);
-                                        const resp = await PartService.bulkAdd(array as Part[]);
+                                        const resp = await PartService.bulkAdd(array);
                                         setBulkAdd(resp);
                                         setBulkAddDialog(true)
                                         setLoading(false);

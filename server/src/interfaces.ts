@@ -40,4 +40,5 @@ interface Project {
     }
 }
 
-export { Project, Inventory, Part }
+// export { Project, Inventory, Part }
+export type { Project, Inventory, Part };

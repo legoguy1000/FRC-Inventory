@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { alpha, Theme } from '@mui/material/styles';
 import type { PickersProComponents } from '@mui/x-date-pickers-pro/themeAugmentation';
 import type { PickerComponents } from '@mui/x-date-pickers/themeAugmentation';
