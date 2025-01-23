@@ -76,7 +76,7 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
     - name: Rund Docker Compose
-      run: docker-compose --project-name ${{ github.ref_name }} -f docker-compose.yaml up -d
+      run: docker compose --project-name ${{ github.ref_name }} -f docker-compose.yaml up -d
       env:
         WEB_IMAGE: "${{ env.REGISTRY }}/${{ env.WEB_IMAGE_PATH }}:${{ github.ref_name }}"
         SERVER_IMAGE: "${{ env.REGISTRY }}/${{ env.SERVER_IMAGE_PATH }}:${{ github.ref_name }}"
