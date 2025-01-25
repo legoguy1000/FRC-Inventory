@@ -1,8 +1,6 @@
 name: Clean up Development Dpeloyments
-
 on:
   delete:
-
 # Specify what jobs to run
 jobs:
   delete:
@@ -13,5 +11,5 @@ jobs:
       - uses: actions/checkout@v4
       - name: Set Branch name
         run: |-
-          helm delete dev-${{ github.event.ref }} -n development --no-hooks --ignore-not-found
+          helm uninstall dev-${{ github.event.ref }} -n development --no-hooks --ignore-not-found --wait
 

@@ -1,5 +1,4 @@
 # This is a basic workflow to help you get started with Actions
-
 name: Primary CI
 
 # Controls when the action will run.
@@ -8,20 +7,17 @@ on:
   push:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
-
 env:
   REGISTRY: ghcr.io
   WEB_IMAGE_PATH: legoguy1000/frc-inventory/web
   SERVER_IMAGE_PATH: legoguy1000/frc-inventory/server
-
 permissions:
   packages: write
   contents: read
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+  # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   build-web-image:
     name: Build Web Image
@@ -80,9 +76,13 @@ jobs:
         registry: ${{ env.REGISTRY }}
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
+    - name: Delete current deployment
+      if: success() && contains(github.event.head_commit.message, '/rebuild')
+      run: |-
+        helm uninstall dev-${{ github.ref_name }} -n development --no-hooks --ignore-not-found --wait
     - name: Deploy helm chart
       run: >-
-        helm upgrade dev-${{ github.ref_name }} ./helm --install
+        helm upgrade dev-${{ github.ref_name }} ./helm --install --wait
         -n development -f .ci/dev-values.yaml
         --set web.image.tag=$IMAGE_TAG  --set server.image.tag=$IMAGE_TAG
         --set ingress.host=$HOST_FQDN
@@ -111,7 +111,7 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
     - name: Deploy helm chart
       run: >-
-        helm upgrade prod-${{ github.ref_name }} ./helm --install
+        helm upgrade prod-${{ github.ref_name }} ./helm --install --wait
         -n production -f .ci/dev-values.yaml
         --set web.image.tag=$IMAGE_TAG  --set server.image.tag=$IMAGE_TAG
         --set ingress.host=$HOST_FQDN
