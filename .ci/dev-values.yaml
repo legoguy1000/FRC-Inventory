@@ -1,0 +1,16 @@
+---
+# web:
+#   image:
+#     tag: ${IMAGE_TAG}
+# server:
+#   image:
+#     tag: ${IMAGE_TAG}
+postgres:
+  persistenc:
+    enabled: true
+    storageClassName: local-path
+ingress:
+  enabled: true
+  annotations:
+    traefik.ingress.kubernetes.io/router.middlewares: default-mw-admin@kubernetescrd
+  # host: ${HOST_FQDN}
