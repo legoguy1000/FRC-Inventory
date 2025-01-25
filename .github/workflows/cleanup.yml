@@ -8,7 +8,7 @@ jobs:
   deploy:
     name: delete
     runs-on: ubuntu-latest
-    if: github.event.ref_type == 'branch' && github.ref_name != github.event.repository.default_branch
+    if: github.event.ref_type == 'branch' && github.event.ref != github.event.repository.default_branch
     steps:
       - uses: actions/checkout@v4
       - name: Set Branch name
