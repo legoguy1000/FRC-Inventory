@@ -1,0 +1,17 @@
+name: Serverless Delete example
+
+on:
+  delete:
+
+# Specify what jobs to run
+jobs:
+  deploy:
+    name: delete
+    runs-on: ubuntu-latest
+    if: github.event.ref_type == 'branch' && github.event.ref != github.event.repository.default_branch
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set Branch name
+        run: |-
+          helm delete dev-${{ github.event.ref }} -n development --purge --no-hooks
+
