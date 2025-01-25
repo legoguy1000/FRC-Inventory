@@ -1,8 +1,6 @@
 name: Clean up Development Dpeloyments
-
 on:
   delete:
-
 # Specify what jobs to run
 jobs:
   delete:
