@@ -1,10 +1,10 @@
 ---
-# web:
-#   image:
-#     tag: ${IMAGE_TAG}
-# server:
-#   image:
-#     tag: ${IMAGE_TAG}
+web:
+  image:
+    pullPolicy: Always
+server:
+  image:
+    pullPolicy: Always
 postgres:
   persistenc:
     enabled: true
@@ -13,4 +13,3 @@ ingress:
   enabled: true
   annotations:
     traefik.ingress.kubernetes.io/router.middlewares: default-mw-admin@kubernetescrd
-  # host: ${HOST_FQDN}
