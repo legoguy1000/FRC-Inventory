@@ -1,0 +1,14 @@
+FROM node:23-alpine
+
+
+RUN apk update
+
+USER node
+
+WORKDIR /opt/inventory
+COPY --chown=node:node . ./
+RUN npm install && npm run build && chmod +x ./entrypoint.sh
+
+EXPOSE 3000
+
+CMD [ "./entrypoint.sh" ]

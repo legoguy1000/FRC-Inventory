@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "Inventory" ALTER COLUMN "retired" DROP NOT NULL,
+ALTER COLUMN "notes" DROP NOT NULL,
+ALTER COLUMN "status" DROP NOT NULL;
