@@ -84,10 +84,10 @@ jobs:
     - name: Delete current deployment
       if: success() &&  && ${{ !contains(github.event.head_commit.message, '/rebuild') }}
       run: |-
-        helm delete dev-${{ github.event.ref }} -n development --no-hooks --ignore-not-found
+        helm uninstall dev-${{ github.event.ref }} -n development --no-hooks --ignore-not-found --wait
     - name: Deploy helm chart
       run: >-
-        helm upgrade dev-${{ github.ref_name }} ./helm --install
+        helm upgrade dev-${{ github.ref_name }} ./helm --install --wait
         -n development -f .ci/dev-values.yaml
         --set web.image.tag=$IMAGE_TAG  --set server.image.tag=$IMAGE_TAG
         --set ingress.host=$HOST_FQDN
@@ -116,7 +116,7 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
     - name: Deploy helm chart
       run: >-
-        helm upgrade prod-${{ github.ref_name }} ./helm --install
+        helm upgrade prod-${{ github.ref_name }} ./helm --install --wait
         -n production -f .ci/dev-values.yaml
         --set web.image.tag=$IMAGE_TAG  --set server.image.tag=$IMAGE_TAG
         --set ingress.host=$HOST_FQDN
