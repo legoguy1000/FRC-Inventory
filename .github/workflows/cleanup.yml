@@ -1,13 +1,13 @@
-name: Serverless Delete example
+name: Clean up Development Dpeloyments
 
 on:
   delete:
 
 # Specify what jobs to run
 jobs:
-  deploy:
-    name: delete
-    runs-on: ubuntu-latest
+  delete:
+    name: Delete deployment "dev-${{ github.event.ref }}"
+    runs-on: test
     if: github.event.ref_type == 'branch' && github.event.ref != github.event.repository.default_branch
     steps:
       - uses: actions/checkout@v4
