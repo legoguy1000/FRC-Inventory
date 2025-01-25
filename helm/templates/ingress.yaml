@@ -27,14 +27,14 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: {{ include "helm.fullname" $ }}-server
+                name: {{ include "helm.fullname" . }}-server
                 port:
                   number: {{ $.Values.server.service.port }}
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: {{ include "helm.fullname" $ }}-web
+                name: {{ include "helm.fullname" . }}-web
                 port:
                   number: {{ $.Values.web.service.port }}
 {{- end }}
