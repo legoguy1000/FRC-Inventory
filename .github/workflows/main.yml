@@ -59,8 +59,9 @@ jobs:
         file: "./Dockerfile.server"
         push: true
         tags: ${{ env.REGISTRY }}/${{ env.SERVER_IMAGE_PATH }}:${{ github.ref_name }}
-  deploy:
-    name: Deploy
+  deploy-dev:
+    name: Deploy Development Environment
+    if: success() && github.ref_name != github.event.repository.default_branch
     # The type of runner that the job will run on
     runs-on: test
     needs:
@@ -83,3 +84,31 @@ jobs:
       env:
         IMAGE_TAG: ${{ github.ref_name }}
         HOST_FQDN: ${{ github.ref_name }}.dev.${{ secrets.DEPLOYMENT_FQDN }}
+  deploy-prod:
+    name: Deploy Prod Environment
+    if: success() && github.ref_name == github.event.repository.default_branch
+    environment:
+      name: production
+      # url: https://${{ secrets.DEPLOYMENT_FQDN }}
+    # The type of runner that the job will run on
+    runs-on: test
+    needs:
+      - build-server-image
+      - build-web-image
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - uses: actions/checkout@v4
+    - uses: docker/login-action@v2
+      with:
+        registry: ${{ env.REGISTRY }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    - name: Deploy helm chart
+      run: >-
+        helm upgrade dev-${{ github.ref_name }} ./helm --install -f .ci/dev-values.yaml
+        --set web.image.tag=$IMAGE_TAG  --set server.image.tag=$IMAGE_TAG
+        --set ingress.host=$HOST_FQDN
+      env:
+        IMAGE_TAG: ${{ github.ref_name }}
+        HOST_FQDN: ${{ secrets.DEPLOYMENT_FQDN }}
