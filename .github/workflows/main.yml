@@ -76,7 +76,7 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
     - name: Delete current deployment
-      if: success() &&  && ${{ contains(github.event.head_commit.message, '/rebuild') }}
+      if: success() && ${{ contains(github.event.head_commit.message, '/rebuild') }}
       run: |-
         helm uninstall dev-${{ github.ref_name }} -n development --no-hooks --ignore-not-found --wait
     - name: Deploy helm chart
