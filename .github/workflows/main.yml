@@ -77,7 +77,7 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
     - name: Deploy helm chart
       run: >-
-        helm install ${{ github.ref_name }} ./helm --upgrade -f .ci/dev-values.yaml
+        helm upgrade ${{ github.ref_name }} ./helm --install -f .ci/dev-values.yaml
         --set web.image.tag=$IMAGE_TAG  --set server.image.tag=$IMAGE_TAG
         --set ingres.host=$HOST_FQDN
       env:
