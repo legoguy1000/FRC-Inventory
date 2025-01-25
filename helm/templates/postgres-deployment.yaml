@@ -62,9 +62,9 @@ spec:
           {{- end }}
       volumes:
         - name: data
-        {{- if .Values.persistence.enabled }}
+        {{- if .Values.postgres.persistence.enabled }}
           persistentVolumeClaim:
-            claimName: {{ .Values.persistence.existingClaim | default (include "helm.fullname" .)  }}
+            claimName: {{ .Values.postgres.persistence.existingClaim | default (include "helm.fullname" .)  }}
         {{- else }}
           emptyDir: {}
         {{- end -}}
