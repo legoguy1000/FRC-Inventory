@@ -43,14 +43,14 @@ spec:
             - name: postgres
               containerPort: {{ .Values.postgres.service.port }}
               protocol: TCP
-          {{- with .Values.postgres.livenessProbe }}
-          livenessProbe:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
-          {{- with .Values.postgres.readinessProbe }}
-          readinessProbe:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
+          # {{- with .Values.postgres.livenessProbe }}
+          # livenessProbe:
+          #   {{- toYaml . | nindent 12 }}
+          # {{- end }}
+          # {{- with .Values.postgres.readinessProbe }}
+          # readinessProbe:
+          #   {{- toYaml . | nindent 12 }}
+          # {{- end }}
           {{- with .Values.postgres.resources }}
           resources:
             {{- toYaml . | nindent 12 }}

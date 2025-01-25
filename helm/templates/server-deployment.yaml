@@ -31,6 +31,30 @@ spec:
       securityContext:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      initContainers:
+        - name: db-check
+          image: "{{ .Values.postgres.image.repository }}:{{ .Values.postgres.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.postgres.image.pullPolicy }}
+          command: ["/bin/bash"]
+          args:
+            - -c
+            - |-
+              until pg_isready -U "$POSTGRES_USER" -d "$POSTGRES_DB" -h "$POSTGRES_SERVER" -p "$POSTGRES_PORT" ; do
+                echo "Waiting for PostgreSQL to start..."
+                sleep 1
+              done
+              echo "PostgreSQL is ready!"
+          env:
+            - name: POSTGRES_USER
+              value: {{ .Values.postgres.user }}
+            - name: POSTGRES_PASS
+              value: {{ .Values.postgres.password }}
+            - name: POSTGRES_DB
+              value: {{ .Values.postgres.db }}
+            - name: POSTGRES_PORT
+              value: {{ .Values.postgres.port }}
+            - name: POSTGRES_SERVER
+              value: {{ include "helm.fullname" . }}-postgres
       containers:
         - name: {{ .Chart.Name }}-server
           {{- with .Values.server.securityContext }}
