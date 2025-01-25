@@ -79,7 +79,7 @@ jobs:
       run: >-
         helm upgrade dev-${{ github.ref_name }} ./helm --install -f .ci/dev-values.yaml
         --set web.image.tag=$IMAGE_TAG  --set server.image.tag=$IMAGE_TAG
-        --set ingres.host=$HOST_FQDN
+        --set ingress.host=$HOST_FQDN
       env:
         IMAGE_TAG: ${{ github.ref_name }}
         HOST_FQDN: ${{ github.ref_name }}.dev.${{ secrets.DEPLOYMENT_FQDN }}
