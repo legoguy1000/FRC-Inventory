@@ -21,7 +21,8 @@ permissions:
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+
+  # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   build-web-image:
     name: Build Web Image
@@ -80,6 +81,10 @@ jobs:
         registry: ${{ env.REGISTRY }}
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
+    - name: Delete current deployment
+      if: success() &&  && ${{ !contains(github.event.head_commit.message, '/rebuild') }}
+      run: |-
+        helm delete dev-${{ github.event.ref }} -n development --no-hooks --ignore-not-found
     - name: Deploy helm chart
       run: >-
         helm upgrade dev-${{ github.ref_name }} ./helm --install
