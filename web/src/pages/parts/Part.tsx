@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from 'react';
 import { useParams } from "react-router";
 import { PartService } from '../../Services/PartService';
-import { NavTitleContext } from '../../App'
+// import { NavTitleContext } from '../../App'
 import { Grid2, Stack } from '@mui/material';
 import { Part as PartInterface } from '../../../../server/src/interfaces'
 
@@ -9,7 +9,7 @@ export default function Part() {
     let params = useParams();
     const [loading, setLoading] = useState(false);
     const [part, setPart] = useState<PartInterface>();
-    const { setTitle } = useContext(NavTitleContext);
+    // const { setTitle } = useContext(NavTitleContext);
 
     useEffect(() => {
         const loadPost = async () => {

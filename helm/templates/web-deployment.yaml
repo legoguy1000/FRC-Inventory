@@ -55,12 +55,18 @@ spec:
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- with .Values.web.volumeMounts }}
           volumeMounts:
+            - name: config
+              mountPath: /usr/share/nginx/html/config.js
+              subPath: config.js
+          {{- with .Values.web.volumeMounts }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
-      {{- with .Values.web.volumes }}
       volumes:
+        - name: config
+          configMap:
+            name: {{ include "helm.fullname" . }}-web
+      {{- with .Values.web.volumes }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
       {{- with .Values.web.nodeSelector }}
