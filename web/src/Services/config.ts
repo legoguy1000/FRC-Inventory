@@ -6,4 +6,4 @@ export const config = {
     params: {}
 };
 
-export const API_ENPOINT = import.meta.env.VITE_APP_API_ENDPOINT;
+export const API_ENPOINT = window.BASE_URL;

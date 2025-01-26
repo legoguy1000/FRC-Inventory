@@ -1,80 +1,149 @@
-// @ts-nocheck
-import { createContext, useState } from 'react';
-import type { } from '@mui/x-date-pickers/themeAugmentation';
-import type { } from '@mui/x-charts/themeAugmentation';
-import type { } from '@mui/x-data-grid/themeAugmentation';
-import type { } from '@mui/x-tree-view/themeAugmentation';
-import { alpha } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
-import Box from '@mui/material/Box';
-import Stack from '@mui/material/Stack';
-import AppNavbar from './components/AppNavbar';
-import Header from './components/Header';
-import SideMenu from './components/SideMenu';
-import AppTheme from './theme/AppTheme';
-import {
-    chartsCustomizations,
-    dataGridCustomizations,
-    datePickersCustomizations,
-    treeViewCustomizations,
-} from './theme/customizations';
-import { Outlet } from "react-router";
+import { createContext, useState, useMemo, useEffect } from 'react';
+import { ReactRouterAppProvider } from '@toolpad/core/react-router';
+import { Outlet, useNavigate } from "react-router";
+import type { Navigation, Authentication } from '@toolpad/core';
+import { SessionContext, type Session } from './components/SessionContext';
+import { jwtDecode, JwtPayload } from "jwt-decode";
 
-const xThemeComponents = {
-    ...chartsCustomizations,
-    ...dataGridCustomizations,
-    ...datePickersCustomizations,
-    ...treeViewCustomizations,
+interface InventoryJwtPayload extends JwtPayload {
+    firstName: string;
+    lastName: string;
+    name: string;
+}
+
+
+const NAVIGATION: Navigation = [
+    {
+        kind: 'header',
+        title: 'Main items',
+    },
+    {
+        segment: 'home',
+        title: 'Home',
+        // icon: <DashboardIcon />,
+    },
+    {
+        segment: 'app/dashboard',
+        title: 'Dashboard',
+        // icon: <DashboardIcon />,
+    },
+    {
+        segment: 'app/inventory',
+        title: 'Inventory',
+        // icon: <ShoppingCartIcon />,
+    },
+    {
+        kind: 'divider',
+    },
+    {
+        segment: "app/admin",
+        title: "Admin",
+        children: [
+            {
+                segment: 'projects',
+                title: 'Projects',
+                // icon: <DescriptionIcon />,
+            },
+            {
+                segment: 'parts',
+                title: 'Parts',
+                // icon: <DescriptionIcon />,
+            },
+        ],
+    }
+];
+const BRANDING = {
+    title: 'My Toolpad Core App',
 };
 
-export const NavTitleContext = createContext({ title: '', setTitle: (x: any) => { } });
-// Provide the context
-export const NavProvider = ({ children }) => {
-    const [title, setTitle] = useState('');
-
-    return (
-        <NavTitleContext.Provider value={{ title, setTitle }}>
-            {children}
-        </NavTitleContext.Provider>
-    );
-};
 
 export default function App(props: { disableCustomTheme?: boolean }) {
-    const [token, setToken] = useState();
+    const navigate = useNavigate();
+    const [session, setSession] = useState<Session | null>(null);
+    const [token, setToken] = useState<string | null>(null);
+    const [loading, setLoading] = useState(true);
+
+    const sessionContextValue = useMemo(
+        () => ({
+            session,
+            setSession,
+            token,
+            setToken,
+            loading,
+        }),
+        [session, loading],
+    );
+    useEffect(() => {
+        console.log(token)
+        if (token != null && token !== "") {
+            try {
+                const decoded = jwtDecode<InventoryJwtPayload>(token);
+                const decodedHeader = jwtDecode<InventoryJwtPayload>(token, { header: true });
+                setSession({
+                    user: {
+                        name: decoded.name,
+                        image: "",
+                        email: ""
+                    },
+                    token: token
+                })
+                console.log(decoded);
+                localStorage.setItem('token', token);
+            } catch (error) {
+                setSession(null)
+                localStorage.setItem('token', "");
+            }
+        } else {
+            setSession(null)
+        }
+    }, [token]);
+
+    const AUTHENTICATION: Authentication = {
+        signIn: () => {
+            navigate('/sign-in');
+        },
+        signOut: () => {
+            navigate('/')
+            localStorage.setItem('token', "");
+            setToken(null)
+            // setSession(null)
+        },
+    };
+    useEffect(() => {
+        let token = localStorage.getItem('token')
+
+        if (token != null && token !== "") {
+            setToken(token);
+        }
+        // Returns an `unsubscribe` function to be called during teardown
+        // const unsubscribe = onAuthStateChanged((user: User | null) => {
+        //     if (user) {
+        //         setSession({
+        //             user: {
+        //                 name: user.displayName || '',
+        //                 email: user.email || '',
+        //                 image: user.photoURL || '',
+        //             },
+        //         });
+        //     } else {
+        //         setSession(null);
+        //     }
+        //     setLoading(false);
+        // });
+
+        // return () => unsubscribe();
+    }, []);
 
     return (
-        <NavProvider>
-            <AppTheme {...props} themeComponents={xThemeComponents}>
-                <CssBaseline enableColorScheme />
-                <Box sx={{ display: 'flex' }}>
-                    <SideMenu />
-                    <AppNavbar />
-                    {/* Main content */}
-                    <Box
-                        component="main"
-                        sx={(theme) => ({
-                            flexGrow: 1,
-                            backgroundColor: alpha(theme.palette.background.default, 1),
-                            overflow: 'auto',
-                            height: '100%'
-                        })}
-                    >
-                        <Stack
-                            spacing={2}
-                            sx={{
-                                alignItems: 'center',
-                                mx: 3,
-                                pb: 5,
-                                mt: { xs: 8, md: 0 },
-                                height: '100%'
-                            }}
-                        >
-                            <Header />
-                            <Outlet />
-                        </Stack>
-                    </Box>
-                </Box>
-            </AppTheme>
-        </NavProvider>
+        <ReactRouterAppProvider
+            navigation={NAVIGATION}
+            branding={BRANDING}
+            session={session}
+            authentication={AUTHENTICATION}
+        >
+            <SessionContext.Provider value={sessionContextValue}>
+                <Outlet />
+            </SessionContext.Provider>
+        </ReactRouterAppProvider>
     );
 }
