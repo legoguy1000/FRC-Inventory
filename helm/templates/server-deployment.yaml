@@ -68,12 +68,12 @@ spec:
               value: postgresql://{{ .Values.postgres.user }}:{{ .Values.postgres.password }}@{{ include "helm.fullname" . }}-postgres:{{ .Values.postgres.service.port }}/{{ .Values.postgres.db }}?schema=public
             - name: SITE_URL
               value: https://{{ .Values.ingress.host | quote }}
-            {{- if .Values.authentication.google.enabled -}}
+            {{- if .Values.authentication.google.enabled }}
             - name: GOOGLE_CLIENT_ID
               value: "{{ .Values.authentication.google.clientId }}"
             - name: GOOGLE_CLIENT_SECRET
               value: "{{ .Values.authentication.google.clientSecret }}"
-              {{- end }}
+            {{- end }}
             - name: JWT_SECRET_KEY
               value: "{{ .Values.server.jwtSecretKey }}"
           ports:
