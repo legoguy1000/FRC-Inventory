@@ -1,13 +1,10 @@
 import * as React from 'react';
+import { User } from '../../../server/src/interfaces';
+import type { Session } from '@toolpad/core';
 
-export interface Session {
-    user: {
-        name?: string;
-        email?: string;
-        image?: string;
-    }
-    token: string;
-}
+// export interface Session {
+//     user:
+// }
 
 interface SessionContextType {
     session: Session | null;

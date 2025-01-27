@@ -1,14 +1,16 @@
 import { createContext, useState, useMemo, useEffect } from 'react';
 import { ReactRouterAppProvider } from '@toolpad/core/react-router';
 import { Outlet, useNavigate } from "react-router";
-import type { Navigation, Authentication } from '@toolpad/core';
-import { SessionContext, type Session } from './components/SessionContext';
+import type { Navigation, Authentication, Session } from '@toolpad/core';
+import { SessionContext } from './components/SessionContext';
 import { jwtDecode, JwtPayload } from "jwt-decode";
 
 interface InventoryJwtPayload extends JwtPayload {
-    firstName: string;
-    lastName: string;
-    name: string;
+    id: string;
+    first_name?: string;
+    last_name?: string;
+    fullName: string;
+    avatar: string;
 }
 
 
@@ -78,14 +80,16 @@ export default function App(props: { disableCustomTheme?: boolean }) {
         if (token != null && token !== "") {
             try {
                 const decoded = jwtDecode<InventoryJwtPayload>(token);
-                const decodedHeader = jwtDecode<InventoryJwtPayload>(token, { header: true });
+                // const decodedHeader = jwtDecode<InventoryJwtPayload>(token, { header: true });
                 setSession({
                     user: {
-                        name: decoded.name,
-                        image: "",
-                        email: ""
+                        id: decoded.id,
+                        name: `${decoded.first_name || ""} ${decoded.last_name || ""}`,
+                        image: decoded.avatar,
+                        // first_name: decoded.first_name || "",
+                        // last_name: decoded.last_name || "",
                     },
-                    token: token
+                    // token: token
                 })
                 console.log(decoded);
                 localStorage.setItem('token', token);

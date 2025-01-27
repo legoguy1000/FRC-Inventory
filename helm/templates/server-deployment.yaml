@@ -66,6 +66,8 @@ spec:
           env:
             - name: DATABASE_URL
               value: postgresql://{{ .Values.postgres.user }}:{{ .Values.postgres.password }}@{{ include "helm.fullname" . }}-postgres:{{ .Values.postgres.service.port }}/{{ .Values.postgres.db }}?schema=public
+            - name: SITE_URL
+              value: https://{{ .Values.ingress.host | quote }}
           ports:
             - name: http
               containerPort: {{ .Values.server.service.port }}

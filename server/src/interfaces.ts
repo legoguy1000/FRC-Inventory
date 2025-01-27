@@ -40,5 +40,13 @@ interface Project {
     }
 }
 
+interface User {
+    id: string;
+    fullName: string;
+    first_name: string;
+    last_name: string;
+    avatar: string;
+}
+
 // export { Project, Inventory, Part }
-export type { Project, Inventory, Part };
+export type { Project, Inventory, Part, User };

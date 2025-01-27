@@ -3,8 +3,10 @@ import dotenv from "dotenv";
 import partRoutes from './routes/parts';
 import ProjectRoutes from './routes/projects';
 import InventoryRoutes from "./routes/inventory";
+import AuthRoutes from './routes/auth'
 import { prisma } from './prisma'
 import cors from "cors";
+import session from 'express-session';
 
 
 dotenv.config();
@@ -18,6 +20,7 @@ const port = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.urlencoded());
 app.use(cors());
+app.use(session({ secret: 'keyboard cat', cookie: { maxAge: 60000, secure: false } }))
 app.get("/", async (req: Request, res: Response) => {
     res.send("Express + TypeScript Server");
     const user = await prisma.user.create({
@@ -77,6 +80,7 @@ app.get("/", async (req: Request, res: Response) => {
 app.use('/parts', partRoutes);
 app.use('/projects', ProjectRoutes);
 app.use('/inventory', InventoryRoutes);
+app.use('/auth', AuthRoutes);
 
 app.listen(port, () => {
     console.log(`[server]: Server is running at http://localhost:${port}`);
