@@ -4,6 +4,8 @@ import { Outlet, Navigate, useLocation } from 'react-router';
 import { DashboardLayout } from '@toolpad/core/DashboardLayout';
 import { PageContainer } from '@toolpad/core/PageContainer';
 import { useSession } from '../components/SessionContext';
+import { UserOrg } from '../components/UserOrg';
+import { Account } from '@toolpad/core/Account';
 
 export default function Layout() {
     const { session, loading } = useSession();
@@ -22,7 +24,7 @@ export default function Layout() {
         return <Navigate to={redirectTo} replace />;
     }
     return (
-        <DashboardLayout sx={{ flex: 1 }}>
+        <DashboardLayout sx={{ flex: 1 }} slots={{ toolbarAccount: UserOrg }}>
             <PageContainer style={{ maxWidth: "unset" }}>
                 <Outlet />
             </PageContainer>

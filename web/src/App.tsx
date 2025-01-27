@@ -2,8 +2,9 @@ import { createContext, useState, useMemo, useEffect } from 'react';
 import { ReactRouterAppProvider } from '@toolpad/core/react-router';
 import { Outlet, useNavigate } from "react-router";
 import type { Navigation, Authentication, Session } from '@toolpad/core';
-import { SessionContext } from './components/SessionContext';
+import { SessionContext, CustomSession } from './components/SessionContext';
 import { jwtDecode, JwtPayload } from "jwt-decode";
+import { UserOrg } from './components/UserOrg';
 
 interface InventoryJwtPayload extends JwtPayload {
     id: string;
@@ -61,7 +62,7 @@ const BRANDING = {
 
 export default function App(props: { disableCustomTheme?: boolean }) {
     const navigate = useNavigate();
-    const [session, setSession] = useState<Session | null>(null);
+    const [session, setSession] = useState<CustomSession | null>(null);
     const [token, setToken] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
 
@@ -89,10 +90,16 @@ export default function App(props: { disableCustomTheme?: boolean }) {
                         // first_name: decoded.first_name || "",
                         // last_name: decoded.last_name || "",
                     },
+                    org: {
+                        name: 'MUI Inc.',
+                        url: 'https://mui.com',
+                        logo: 'https://mui.com/static/logo.svg',
+                    },
                     // token: token
                 })
                 console.log(decoded);
                 localStorage.setItem('token', token);
+                console.log(session)
             } catch (error) {
                 setSession(null)
                 localStorage.setItem('token', "");

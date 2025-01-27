@@ -1,4 +1,7 @@
 ---
+authentication:
+  google:
+    enabled: true
 web:
   image:
     pullPolicy: Always

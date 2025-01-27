@@ -1,14 +1,20 @@
 import * as React from 'react';
 import { User } from '../../../server/src/interfaces';
-import type { Session } from '@toolpad/core';
+// import type { Session } from '@toolpad/core';
+import { Session } from '@toolpad/core/AppProvider';
+// import { useSession } from '@toolpad/core/useSession';
 
-// export interface Session {
-//     user:
-// }
+export interface CustomSession extends Session {
+    org: {
+        name: string;
+        url: string;
+        logo: string;
+    };
+}
 
 interface SessionContextType {
-    session: Session | null;
-    setSession: (session: Session) => void;
+    session: CustomSession | null;
+    setSession: (session: CustomSession) => void;
     token: string | null;
     setToken: (token: string) => void;
     loading: boolean;

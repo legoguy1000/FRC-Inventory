@@ -2,8 +2,14 @@ import express, { Request, Response } from "express";
 import { passport } from './auth.strategies'
 import { User } from "@prisma/client";
 import jwt from "jsonwebtoken";
-const router = express.Router();
+import * as crypto from 'crypto';
 
+function generateRandomString(length: number): string {
+    return crypto.randomBytes(Math.ceil(length / 2)).toString('hex').slice(0, length);
+}
+const jwtSecretKey = process.env.JWT_SECRET_KEY || generateRandomString(50);
+
+const router = express.Router();
 
 router.get('/login/google', passport.authenticate('google'));
 router.post('/redirect/google', function (req, res, next) {
@@ -12,13 +18,11 @@ router.post('/redirect/google', function (req, res, next) {
         if (!user) {
             return res.status(401).send("Something went wrong. " + JSON.stringify(info))
         }
-        let jwtSecretKey = process.env.JWT_SECRET_KEY || "asdfadsfadsfasdf";
         let data = {
             time: Date(),
             ...user
         }
         const token = jwt.sign(data, jwtSecretKey);
-        res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
         res.send(token);
     })(req, res, next);
 });

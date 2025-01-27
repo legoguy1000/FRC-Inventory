@@ -7,3 +7,4 @@ metadata:
 data:
   config.js: |-
     var BASE_URL = '{{ .Values.web.apiUrl }}';
+    var GOOGLE_OAUTH_ENABLED = {{ .Values.authentication.google.enabled }}

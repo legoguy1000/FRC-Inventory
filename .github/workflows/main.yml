@@ -85,7 +85,8 @@ jobs:
         helm upgrade dev-${{ github.ref_name }} ./helm --install --wait
         -n development -f .ci/dev-values.yaml
         --set web.image.tag=$IMAGE_TAG  --set server.image.tag=$IMAGE_TAG
-        --set ingress.host=$HOST_FQDN
+        --set ingress.host=$HOST_FQDN --set authentication.google.clientId=${{ secrets.GOOGLE_CLIENT_ID_DEV }}
+        --set authentication.google.clientSecret=${{ secrets.GOOGLE_CLIENT_SECRET_DEV }}
       env:
         IMAGE_TAG: ${{ github.ref_name }}
         HOST_FQDN: ${{ github.ref_name }}.dev.${{ secrets.DEPLOYMENT_FQDN }}
