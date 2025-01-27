@@ -1,7 +1,7 @@
 import { createContext, useState, StrictMode } from 'react';
 import * as ReactDOM from 'react-dom/client';
 import App from './App';
-import { createBrowserRouter, RouterProvider } from "react-router";
+import { createBrowserRouter, RouterProvider, Navigate } from "react-router";
 import MainDash from './pages/Dashboard';
 import PartsHome from './pages/parts/Parts'
 import ProjectHome from './pages/projects/Projects'
@@ -10,48 +10,47 @@ import SignInPage from './pages/SignIn'
 import OauthCallback from './pages/OauthCallback'
 import './main.css'
 import Layout from './layouts';
-import Home from './layouts/home';
+import Home from './pages/home';
 
 const router = createBrowserRouter([
     {
+        path: '/',
         Component: App, // root layout route
         children: [
             {
-                path: '/',
-                Component: Home,
-                children: [
-                    {
-                        path: 'home',
-                        index: true,
-                        // Component: MainDash,
-                    },
-                ]
-            },
-            {
-                path: '/app',
                 Component: Layout,
                 children: [
                     {
-                        path: 'dashboard',
-                        Component: MainDash,
+                        path: 'home',
+                        Component: Home,
                     },
                     {
-                        path: 'inventory',
-                        Component: Inventory,
-                    },
-                    {
-                        path: 'admin',
+                        path: 'app',
                         children: [
                             {
-                                path: 'projects',
-                                Component: ProjectHome,
+                                path: 'dashboard',
+                                Component: MainDash,
+
                             },
                             {
-                                path: 'parts',
-                                Component: PartsHome,
+                                path: 'inventory',
+                                Component: Inventory,
                             },
+                            {
+                                path: 'admin',
+                                children: [
+                                    {
+                                        path: 'projects',
+                                        Component: ProjectHome,
+                                    },
+                                    {
+                                        path: 'parts',
+                                        Component: PartsHome,
+                                    },
+                                ],
+                            }
                         ],
-                    }
+                    },
                 ],
             },
             {
@@ -66,13 +65,20 @@ const router = createBrowserRouter([
                         path: 'google',
                     },
                     {
-                        path: 'parts',
+                        path: 'github',
                     },
                 ],
             },
-        ],
-    },
-]);
+            {
+                index: true,
+                element: < Navigate to="/home" replace={true} />,
+            },
+            {
+                path: "*",
+                element: < Navigate to="/home" replace={true} />,
+            },
+        ]
+    }]);
 
 ReactDOM.createRoot(document.querySelector("#root")!).render(
     <RouterProvider router={router} />

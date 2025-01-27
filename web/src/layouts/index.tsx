@@ -17,12 +17,12 @@ export default function Layout() {
     //         </div>
     //     );
     // }
-    if (!session) {
-        // Add the `callbackUrl` search parameter
-        const redirectTo = `/sign-in?callbackUrl=${encodeURIComponent(location.pathname)}`;
+    // if (!session) {
+    //     // Add the `callbackUrl` search parameter
+    //     const redirectTo = `/sign-in?callbackUrl=${encodeURIComponent(location.pathname)}`;
 
-        return <Navigate to={redirectTo} replace />;
-    }
+    //     return <Navigate to={redirectTo} replace />;
+    // }
     return (
         <DashboardLayout sx={{ flex: 1 }} slots={{ toolbarAccount: UserOrg }}>
             <PageContainer style={{ maxWidth: "unset" }}>

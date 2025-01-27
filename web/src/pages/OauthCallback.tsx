@@ -1,7 +1,10 @@
 import { useEffect } from 'react';
 import { useLocation, useNavigate } from "react-router";
+import Backdrop from '@mui/material/Backdrop';
+import CircularProgress from '@mui/material/CircularProgress';
 import { AuthService } from '../Services';
 import { useSession } from '../components/SessionContext';
+import { Stack } from '@mui/material';
 
 type LoginProviders = "google";
 
@@ -32,5 +35,15 @@ export default function Callback() {
             handleLogin[provider as LoginProviders](code)
         }
     }, [code]);
-    return <div>Processing Authentication...{JSON.stringify(session)}</div>;
+    return <div>
+        <Backdrop
+            sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
+            open={true}
+        >
+            <Stack alignItems="center">
+                <div style={{ fontSize: "xxx-large" }}>Processing Authentication......</div>
+                <CircularProgress color="primary" size="30vh" />
+            </Stack>
+        </Backdrop>
+    </div>;
 };
