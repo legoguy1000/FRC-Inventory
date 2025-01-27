@@ -10,6 +10,7 @@ export interface CustomSession extends Session {
         url: string;
         logo: string;
     };
+    admin: boolean;
 }
 
 interface SessionContextType {
@@ -29,3 +30,7 @@ export const SessionContext = React.createContext<SessionContextType>({
 });
 
 export const useSession = () => React.useContext(SessionContext);
+
+export const loggedIn = () => {
+    return useSession().session !== null;
+}

@@ -1,7 +1,8 @@
 import { createContext, useState, StrictMode } from 'react';
 import * as ReactDOM from 'react-dom/client';
 import App from './App';
-import { createBrowserRouter, RouterProvider, Navigate } from "react-router";
+import { createBrowserRouter, RouterProvider, Navigate, To, redirect } from "react-router";
+import { CustomSession, useSession, loggedIn } from './components/SessionContext';
 import MainDash from './pages/Dashboard';
 import PartsHome from './pages/parts/Parts'
 import ProjectHome from './pages/projects/Projects'
@@ -11,6 +12,45 @@ import OauthCallback from './pages/OauthCallback'
 import './main.css'
 import Layout from './layouts';
 import Home from './pages/home';
+
+const RequireAuth = ({ children, redirectTo, admin = false }: { children: any, redirectTo: To, admin?: boolean }) => {
+    const { session } = useSession();
+    let requireAdmin: boolean = false;
+    if (admin && !session?.admin) {
+        requireAdmin = true;
+    }
+    return session && !requireAdmin ? children : <Navigate to={redirectTo} replace />;
+}
+
+// const adminRoutes = () => {
+//     // if (session === null || !session?.admin) {
+//     //     return {}
+//     // }
+//     return {
+//         path: 'admin',
+//         // loader: async () => {
+//         //     const { session } = useSession();
+//         //     // const isLoggedIn: boolean = await loggedIn();
+
+//         //     if (session === null || session?.admin) {
+//         //         // return redirect("/");
+//         //     }
+
+//         //     return null;
+//         // },
+//         // element: < RequireAuth redirectTo="/sign-in" admin={true} > <></></RequireAuth >,
+//         children: [
+//             {
+//                 path: 'projects',
+//                 Component: ProjectHome,
+//             },
+//             {
+//                 path: 'parts',
+//                 Component: PartsHome,
+//             },
+//         ],
+//     }
+// }
 
 const router = createBrowserRouter([
     {
@@ -29,28 +69,28 @@ const router = createBrowserRouter([
                         children: [
                             {
                                 path: 'dashboard',
-                                Component: MainDash,
+                                element: <RequireAuth redirectTo="/sign-in"><MainDash /></RequireAuth>,
 
                             },
                             {
                                 path: 'inventory',
                                 Component: Inventory,
                             },
-                            {
-                                path: 'admin',
-                                children: [
-                                    {
-                                        path: 'projects',
-                                        Component: ProjectHome,
-                                    },
-                                    {
-                                        path: 'parts',
-                                        Component: PartsHome,
-                                    },
-                                ],
-                            }
                         ],
                     },
+                    {
+                        path: 'admin',
+                        children: [
+                            {
+                                path: 'projects',
+                                Component: ProjectHome,
+                            },
+                            {
+                                path: 'parts',
+                                Component: PartsHome,
+                            },
+                        ],
+                    }
                 ],
             },
             {
