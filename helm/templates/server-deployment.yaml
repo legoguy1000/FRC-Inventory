@@ -70,12 +70,12 @@ spec:
               value: https://{{ .Values.ingress.host | quote }}
             {{- if .Values.authentication.google.enabled -}}
             - name: GOOGLE_CLIENT_ID
-              value: "{{ .Values.authentication.google.clientId | default('') }}"
+              value: "{{ .Values.authentication.google.clientId }}"
             - name: GOOGLE_CLIENT_SECRET
-              value: "{{ .Values.authentication.google.clientSecret | default('') }}"
+              value: "{{ .Values.authentication.google.clientSecret }}"
               {{- end }}
             - name: JWT_SECRET_KEY
-              value: "{{ .Values.server.jwtSecretKey | default('') }}"
+              value: "{{ .Values.server.jwtSecretKey }}"
           ports:
             - name: http
               containerPort: {{ .Values.server.service.port }}
