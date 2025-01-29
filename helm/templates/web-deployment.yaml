@@ -15,9 +15,9 @@ spec:
       app.kubernetes.io/part-of: FRC Inventory
   template:
     metadata:
-      {{- with .Values.web.podAnnotations }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+      {{- with .Values.web.podAnnotations }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
