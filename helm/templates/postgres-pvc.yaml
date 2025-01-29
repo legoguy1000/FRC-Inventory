@@ -10,10 +10,9 @@ metadata:
 {{ toYaml . | indent 4 }}
 {{- end }}
   labels:
-    app: {{ template "helm.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app.kubernetes.io/component: postgres
+    app.kubernetes.io/part-of: FRC Inventory
+    {{- include "helm.labels" . | nindent 4 }}
 spec:
   accessModes:
     - {{ .Values.postgres.persistence.accessMode | quote }}

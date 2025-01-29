@@ -3,21 +3,26 @@ kind: Deployment
 metadata:
   name: {{ include "helm.fullname" . }}-web
   labels:
+    app.kubernetes.io/component: web
+    app.kubernetes.io/part-of: FRC Inventory
     {{- include "helm.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.web.replicaCount }}
   selector:
     matchLabels:
       {{- include "helm.selectorLabels" . | nindent 6 }}
-      service: web
+      app.kubernetes.io/component: web
+      app.kubernetes.io/part-of: FRC Inventory
   template:
     metadata:
       {{- with .Values.web.podAnnotations }}
       annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        service: web
+        app.kubernetes.io/component: web
+        app.kubernetes.io/part-of: FRC Inventory
         {{- include "helm.labels" . | nindent 8 }}
         {{- with .Values.web.podLabels }}
         {{- toYaml . | nindent 8 }}

@@ -4,6 +4,7 @@ kind: Ingress
 metadata:
   name: {{ include "helm.fullname" . }}
   labels:
+    app.kubernetes.io/part-of: FRC Inventory
     {{- include "helm.labels" . | nindent 4 }}
   {{- with .Values.ingress.annotations }}
   annotations:

@@ -87,6 +87,8 @@ jobs:
         --set web.image.tag=$IMAGE_TAG  --set server.image.tag=$IMAGE_TAG
         --set ingress.host=$HOST_FQDN --set authentication.google.clientId=${{ secrets.GOOGLE_CLIENT_ID_DEV }}
         --set authentication.google.clientSecret=${{ secrets.GOOGLE_CLIENT_SECRET_DEV }}
+        --set web.podAnnotations.github/run-id=${{ github.run_id }}
+        --set server.podAnnotations.github/run-id=${{ github.run_id }}
       env:
         IMAGE_TAG: ${{ github.ref_name }}
         HOST_FQDN: ${{ github.ref_name }}.dev.${{ secrets.DEPLOYMENT_FQDN }}

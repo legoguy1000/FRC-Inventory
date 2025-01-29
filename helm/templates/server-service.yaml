@@ -3,6 +3,8 @@ kind: Service
 metadata:
   name: {{ include "helm.fullname" . }}-server
   labels:
+    app.kubernetes.io/component: server
+    app.kubernetes.io/part-of: FRC Inventory
     {{- include "helm.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.server.service.type }}
@@ -13,4 +15,5 @@ spec:
       name: http
   selector:
     {{- include "helm.selectorLabels" . | nindent 4 }}
-    service: server
+    app.kubernetes.io/component: server
+    app.kubernetes.io/part-of: FRC Inventory
