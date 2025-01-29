@@ -22,10 +22,10 @@ router.get('/login/google', (req, res, next) => {
     authenticator(req, res, next)
 })
 router.post('/redirect/google', function (req, res, next) {
-    passport.authenticate('google', { session: false }, (err: any, user: User | null, info: object | string | Array<string | undefined>, status: number | Array<number | undefined>) => {
+    passport.authenticate('google', { session: false }, (err: Error, user: User | null, info: object, status: number | Array<number | undefined>) => {
         if (err) { return next(err) }
         if (!user) {
-            return res.status(401).send("Something went wrong. " + JSON.stringify(info))
+            return res.status(401).send(info)
         }
         let data = {
             time: Date(),

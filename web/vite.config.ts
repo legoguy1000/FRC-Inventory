@@ -9,7 +9,7 @@ export default defineConfig({
             usePolling: true
         },
         headers: {
-            "Cross-Origin-Opener-Policy": "same-origin",
+            "Cross-Origin-Opener-Policy": "same-origin-allow-popups",
         },
         cors: {
             // the origin you will be accessing via browser

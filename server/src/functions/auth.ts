@@ -14,9 +14,9 @@ const lookupUserFromOAuth = async (provider: string, id: string) => {
                 }
             }
         });
-        return [false, user];
+        return { error: false, user: user, message: "" }
     } catch (error) {
-        return [true, 'User is not authorized to login'] //{ error: true, message: 'User does not exist.' }
+        return { error: true, user: null, message: 'User is not authorized to login' } //{ error: true, message: 'User does not exist.' }
     }
 }
 

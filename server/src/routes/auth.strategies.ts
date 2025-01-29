@@ -16,9 +16,9 @@ if (process.env.GOOGLE_CLIENT_ID !== undefined && process.env.GOOGLE_CLIENT_ID !
         // state: false,
     }, async function verify(accessToken, refreshToken, profile, cb) {
         // console.log(profile)
-        let [error, data] = await lookupUserFromOAuth("google", profile.id);
-        if (!error) {
-            return cb(data as string, false);
+        let { error, user, message } = await lookupUserFromOAuth("google", profile.id);
+        if (error) {
+            return cb(null, false, { message: message });
         }
         // let user: User = {
         //     id: profile.id,
@@ -31,7 +31,7 @@ if (process.env.GOOGLE_CLIENT_ID !== undefined && process.env.GOOGLE_CLIENT_ID !
         //     createdAt: new Date(),
         //     updatedAt: new Date(),
         // } // await lookupUserFromOAuth(profile.id);
-        return cb(null, data as User);
+        return cb(null, user as User, { message: message });
     }));
 } else {
     console.warn("GOOGLE_CLIENT_ID and/or GOOGLE_CLIENT_SECRET environment variables is not set or is blank. This will disable Google Login")
