@@ -23,6 +23,7 @@ if (process.env.GOOGLE_CLIENT_ID !== undefined && process.env.GOOGLE_CLIENT_ID !
             first_name: profile.name?.givenName || "",
             last_name: profile.name?.familyName || "",
             avatar: profile?.photos !== undefined && profile?.photos[0].value || "",
+            admin: true,
             createdAt: new Date(),
             updatedAt: new Date(),
         } // await lookupUserFromOAuth(profile.id);

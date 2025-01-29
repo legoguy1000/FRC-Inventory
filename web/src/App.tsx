@@ -6,13 +6,10 @@ import { SessionContext, CustomSession } from './components/SessionContext';
 import { jwtDecode, JwtPayload } from "jwt-decode";
 import { UserOrg } from './components/UserOrg';
 import { WEBSITE_TITLE } from './config'
+import { User } from '../../server/src/interfaces';
 
-interface InventoryJwtPayload extends JwtPayload {
-    id: string;
-    first_name?: string;
-    last_name?: string;
-    fullName: string;
-    avatar: string;
+interface InventoryJwtPayload extends JwtPayload, User {
+
 }
 
 const BRANDING = {
@@ -109,7 +106,7 @@ export default function App(props: { disableCustomTheme?: boolean }) {
                         url: 'https://mui.com',
                         logo: 'https://mui.com/static/logo.svg',
                     },
-                    admin: true
+                    admin: decoded.admin
                     // token: token
                 })
                 console.log(decoded);
