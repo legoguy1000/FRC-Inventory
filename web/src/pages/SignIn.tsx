@@ -2,9 +2,9 @@
 import * as React from 'react';
 import { AuthProvider, SignInPage } from '@toolpad/core/SignInPage';
 import LinearProgress from '@mui/material/LinearProgress';
-import { Navigate, useNavigate } from 'react-router';
+import { Navigate, useNavigate, useSearchParams } from 'react-router';
 import { useSession } from '../components/SessionContext';
-import { API_ENPOINT } from '../Services/config';
+import { API_ENPOINT } from '../config';
 
 // const fakeAuth = (): Promise<string> =>
 //     new Promise((resolve) => {
@@ -14,6 +14,7 @@ declare const window: any;
 
 export default function SignIn() {
     const { session, setSession, token, setToken, loading } = useSession();
+    const [searchParams, setSearchParams] = useSearchParams();
     const navigate = useNavigate();
     let authProviders: AuthProvider[] = [];
     if (window.GOOGLE_OAUTH_ENABLED) {
@@ -37,7 +38,7 @@ export default function SignIn() {
                 let result;
                 try {
                     if (provider.id === 'google') {
-                        const authUrl = `${API_ENPOINT}/auth/login/google?origin=${window.location.origin}`;
+                        const authUrl = `${API_ENPOINT}/auth/login/google?origin=${searchParams.get('callbackUrl')}`;
                         window.location.href = authUrl;
                         // navigate(authUrl, { replace: true })
                         // const popup = window.open(authUrl, 'OAuth Popup', 'width=600,height=400');

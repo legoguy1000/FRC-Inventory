@@ -13,7 +13,7 @@ if (process.env.GOOGLE_CLIENT_ID !== undefined && process.env.GOOGLE_CLIENT_ID !
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
         callbackURL: `${process.env.SITE_URL}/auth/callback/google`,
         scope: ['profile'],
-        state: false
+        // state: false,
     }, async function verify(accessToken, refreshToken, profile, cb) {
         // console.log(accessToken)
         // console.log(profile)

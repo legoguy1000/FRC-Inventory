@@ -3,6 +3,7 @@ authentication:
   google:
     enabled: true
 web:
+  websiteTitle: FRC 5572 Inventory
   image:
     pullPolicy: Always
 server:

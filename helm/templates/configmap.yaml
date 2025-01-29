@@ -6,5 +6,6 @@ metadata:
     {{- include "helm.labels" . | nindent 4 }}
 data:
   config.js: |-
-    var BASE_URL = '{{ .Values.web.apiUrl }}';
+    var BASE_URL = "{{ .Values.web.apiUrl }}";
     var GOOGLE_OAUTH_ENABLED = {{ .Values.authentication.google.enabled }}
+    var WEBSITE_TITLE = "{{ .Values.web.apiUrl }}"

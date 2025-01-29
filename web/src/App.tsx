@@ -1,10 +1,11 @@
 import { createContext, useState, useMemo, useEffect } from 'react';
 import { ReactRouterAppProvider } from '@toolpad/core/react-router';
-import { Outlet, useNavigate } from "react-router";
-import type { Navigation, Authentication, Session } from '@toolpad/core';
+import { Navigate, Outlet, useNavigate } from "react-router";
+import type { Navigation, Authentication, Session, NavigationItem } from '@toolpad/core';
 import { SessionContext, CustomSession } from './components/SessionContext';
 import { jwtDecode, JwtPayload } from "jwt-decode";
 import { UserOrg } from './components/UserOrg';
+import { WEBSITE_TITLE } from './config'
 
 interface InventoryJwtPayload extends JwtPayload {
     id: string;
@@ -13,6 +14,10 @@ interface InventoryJwtPayload extends JwtPayload {
     fullName: string;
     avatar: string;
 }
+
+const BRANDING = {
+    title: WEBSITE_TITLE
+};
 
 
 const NAVIGATION: Navigation = [
@@ -35,37 +40,40 @@ const NAVIGATION: Navigation = [
         title: 'Inventory',
         // icon: <ShoppingCartIcon />,
     },
-    {
-        kind: 'divider',
-    },
-    {
-        segment: "app/admin",
-        title: "Admin",
-        children: [
-            {
-                segment: 'projects',
-                title: 'Projects',
-                // icon: <DescriptionIcon />,
-            },
-            {
-                segment: 'parts',
-                title: 'Parts',
-                // icon: <DescriptionIcon />,
-            },
-        ],
-    }
 ];
-const BRANDING = {
-    title: 'My Toolpad Core App',
-};
+const NAVIGATION_ADMIN: NavigationItem = {
+    segment: "app/admin",
+    title: "Admin",
+    children: [
+        {
+            segment: 'projects',
+            title: 'Projects',
+            // icon: <DescriptionIcon />,
+        },
+        {
+            segment: 'parts',
+            title: 'Parts',
+            // icon: <DescriptionIcon />,
+        },
+    ],
+}
 
-
+const buildNavBar = (session: CustomSession | null) => {
+    let nav: Navigation = [];
+    nav = nav.concat(NAVIGATION);
+    if (session !== null && session?.admin) {
+        nav.push(NAVIGATION_ADMIN)
+    }
+    console.log("building NAV")
+    console.log(nav)
+    return nav;
+}
 export default function App(props: { disableCustomTheme?: boolean }) {
     const navigate = useNavigate();
     const [session, setSession] = useState<CustomSession | null>(null);
     const [token, setToken] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
-
+    const [sideBarNav, setSideBarNav] = useState<Navigation>(buildNavBar(session));
     const sessionContextValue = useMemo(
         () => ({
             session,
@@ -76,6 +84,7 @@ export default function App(props: { disableCustomTheme?: boolean }) {
         }),
         [session, loading],
     );
+    // let sideBarNav: Navigation = [];
     useEffect(() => {
         console.log(token)
         if (token != null && token !== "") {
@@ -95,6 +104,7 @@ export default function App(props: { disableCustomTheme?: boolean }) {
                         url: 'https://mui.com',
                         logo: 'https://mui.com/static/logo.svg',
                     },
+                    admin: true
                     // token: token
                 })
                 console.log(decoded);
@@ -144,10 +154,15 @@ export default function App(props: { disableCustomTheme?: boolean }) {
 
         // return () => unsubscribe();
     }, []);
+    useEffect(() => {
+        setSideBarNav(buildNavBar(session));
+    }, [session])
+
+
 
     return (
         <ReactRouterAppProvider
-            navigation={NAVIGATION}
+            navigation={sideBarNav}
             branding={BRANDING}
             session={session}
             authentication={AUTHENTICATION}

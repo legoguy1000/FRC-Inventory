@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { config, API_ENPOINT } from './config';
+import { axios_config, API_ENPOINT } from '../config';
 
 const AuthService = {
     isLoggedIn: function () {
@@ -7,7 +7,7 @@ const AuthService = {
     },
     loginWithGoogle: async (code: string) => {
         try {
-            const response = await axios.post(`${API_ENPOINT}/auth/redirect/google`, { code: code }, config);
+            const response = await axios.post(`${API_ENPOINT}/auth/redirect/google`, { code: code }, axios_config);
             return response.data;
         } catch (error: any) {
             return error.response.data;

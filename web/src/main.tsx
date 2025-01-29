@@ -1,7 +1,7 @@
 import { createContext, useState, StrictMode } from 'react';
 import * as ReactDOM from 'react-dom/client';
 import App from './App';
-import { createBrowserRouter, RouterProvider, Navigate, To, redirect } from "react-router";
+import { createBrowserRouter, RouterProvider, Navigate, To, redirect, useLocation } from "react-router";
 import { CustomSession, useSession, loggedIn } from './components/SessionContext';
 import MainDash from './pages/Dashboard';
 import PartsHome from './pages/parts/Parts'
@@ -15,11 +15,16 @@ import Home from './pages/home';
 
 const RequireAuth = ({ children, redirectTo, admin = false }: { children: any, redirectTo: To, admin?: boolean }) => {
     const { session } = useSession();
+    const location = useLocation();
     let requireAdmin: boolean = false;
     if (admin && !session?.admin) {
         requireAdmin = true;
     }
-    return session && !requireAdmin ? children : <Navigate to={redirectTo} replace />;
+    if (session && !requireAdmin) {
+        return children;
+    }
+    const redirect = `${redirectTo}?callbackUrl=${encodeURIComponent(location.pathname)}`;
+    return <Navigate to={redirect} replace />;
 }
 
 // const adminRoutes = () => {
@@ -76,21 +81,22 @@ const router = createBrowserRouter([
                                 path: 'inventory',
                                 Component: Inventory,
                             },
+                            {
+                                path: 'admin',
+                                element: < RequireAuth redirectTo="/sign-in" admin={true} > <></></RequireAuth >,
+                                children: [
+                                    {
+                                        path: 'projects',
+                                        Component: ProjectHome,
+                                    },
+                                    {
+                                        path: 'parts',
+                                        Component: PartsHome,
+                                    },
+                                ],
+                            }
                         ],
                     },
-                    {
-                        path: 'admin',
-                        children: [
-                            {
-                                path: 'projects',
-                                Component: ProjectHome,
-                            },
-                            {
-                                path: 'parts',
-                                Component: PartsHome,
-                            },
-                        ],
-                    }
                 ],
             },
             {
