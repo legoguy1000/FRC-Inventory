@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: {{ include "helm.fullname" . }}-web
   labels:
-    app.kubernetes.io/part-of: FRC Inventory
+    app.kubernetes.io/part-of: FRC-Inventory
     {{- include "helm.labels" . | nindent 4 }}
 data:
   config.js: |-

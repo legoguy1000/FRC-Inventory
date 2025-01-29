@@ -4,7 +4,7 @@ metadata:
   name: {{ include "helm.fullname" . }}-postgres
   labels:
     app.kubernetes.io/component: postgres
-    app.kubernetes.io/part-of: FRC Inventory
+    app.kubernetes.io/part-of: FRC-Inventory
     {{- include "helm.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.postgres.replicaCount }}
@@ -12,7 +12,7 @@ spec:
     matchLabels:
       {{- include "helm.selectorLabels" . | nindent 6 }}
       app.kubernetes.io/component: postgres
-      app.kubernetes.io/part-of: FRC Inventory
+      app.kubernetes.io/part-of: FRC-Inventory
   template:
     metadata:
       {{- with .Values.postgres.podAnnotations }}
@@ -21,7 +21,7 @@ spec:
       {{- end }}
       labels:
         app.kubernetes.io/component: postgres
-        app.kubernetes.io/part-of: FRC Inventory
+        app.kubernetes.io/part-of: FRC-Inventory
         {{- include "helm.labels" . | nindent 8 }}
         {{- with .Values.postgres.podLabels }}
         {{- toYaml . | nindent 8 }}

@@ -11,7 +11,7 @@ metadata:
 {{- end }}
   labels:
     app.kubernetes.io/component: postgres
-    app.kubernetes.io/part-of: FRC Inventory
+    app.kubernetes.io/part-of: FRC-Inventory
     {{- include "helm.labels" . | nindent 4 }}
 spec:
   accessModes:

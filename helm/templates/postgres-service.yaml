@@ -4,7 +4,7 @@ metadata:
   name: {{ include "helm.fullname" . }}-postgres
   labels:
     app.kubernetes.io/component: postgres
-    app.kubernetes.io/part-of: FRC Inventory
+    app.kubernetes.io/part-of: FRC-Inventory
     {{- include "helm.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.postgres.service.type }}
@@ -16,4 +16,4 @@ spec:
   selector:
     {{- include "helm.selectorLabels" . | nindent 4 }}
     app.kubernetes.io/component: postgres
-    app.kubernetes.io/part-of: FRC Inventory
+    app.kubernetes.io/part-of: FRC-Inventory
