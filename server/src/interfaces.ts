@@ -46,6 +46,9 @@ interface User {
     first_name: string;
     last_name: string;
     avatar: string;
+    admin: boolean;
+    createdAt: Date;
+    updatedAt: Date;
 }
 
 // export { Project, Inventory, Part }

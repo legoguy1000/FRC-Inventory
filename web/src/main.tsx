@@ -1,7 +1,7 @@
 import { createContext, useState, StrictMode } from 'react';
 import * as ReactDOM from 'react-dom/client';
 import App from './App';
-import { createBrowserRouter, RouterProvider, Navigate, To, redirect, useLocation } from "react-router";
+import { createBrowserRouter, RouterProvider, Navigate, To, redirect, useLocation, Outlet } from "react-router";
 import { CustomSession, useSession, loggedIn } from './components/SessionContext';
 import MainDash from './pages/Dashboard';
 import PartsHome from './pages/parts/Parts'
@@ -12,6 +12,7 @@ import OauthCallback from './pages/OauthCallback'
 import './main.css'
 import Layout from './layouts';
 import Home from './pages/home';
+import UsersHome from './pages/users/Users';
 
 const RequireAuth = ({ children, redirectTo, admin = false }: { children: any, redirectTo: To, admin?: boolean }) => {
     const { session } = useSession();
@@ -83,7 +84,7 @@ const router = createBrowserRouter([
                             },
                             {
                                 path: 'admin',
-                                element: < RequireAuth redirectTo="/sign-in" admin={true} > <></></RequireAuth >,
+                                element: < RequireAuth redirectTo="/sign-in" admin={true} > <Outlet /></RequireAuth >,
                                 children: [
                                     {
                                         path: 'projects',
@@ -92,6 +93,10 @@ const router = createBrowserRouter([
                                     {
                                         path: 'parts',
                                         Component: PartsHome,
+                                    },
+                                    {
+                                        path: 'users',
+                                        Component: UsersHome,
                                     },
                                 ],
                             }

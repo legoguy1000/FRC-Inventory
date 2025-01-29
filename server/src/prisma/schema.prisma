@@ -18,6 +18,7 @@ model User {
     first_name String
     last_name  String
     avatar     String   @default("")
+    admin      Boolean  @default(false)
     createdAt  DateTime @default(now())
     updatedAt  DateTime @default(now()) @updatedAt
 }

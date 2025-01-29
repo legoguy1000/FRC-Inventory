@@ -55,6 +55,11 @@ const NAVIGATION_ADMIN: NavigationItem = {
             title: 'Parts',
             // icon: <DescriptionIcon />,
         },
+        {
+            segment: 'users',
+            title: 'Users',
+            // icon: <DescriptionIcon />,
+        },
     ],
 }
 

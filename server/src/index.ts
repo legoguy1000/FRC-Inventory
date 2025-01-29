@@ -4,6 +4,7 @@ import partRoutes from './routes/parts';
 import ProjectRoutes from './routes/projects';
 import InventoryRoutes from "./routes/inventory";
 import AuthRoutes from './routes/auth'
+import UserRoutes from './routes/users'
 import { prisma } from './prisma'
 import cors from "cors";
 import session from 'express-session';
@@ -80,6 +81,7 @@ app.get("/", async (req: Request, res: Response) => {
 app.use('/parts', partRoutes);
 app.use('/projects', ProjectRoutes);
 app.use('/inventory', InventoryRoutes);
+app.use('/users', UserRoutes);
 app.use('/auth', AuthRoutes);
 
 app.listen(port, () => {
