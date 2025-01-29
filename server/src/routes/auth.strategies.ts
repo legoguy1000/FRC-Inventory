@@ -15,19 +15,23 @@ if (process.env.GOOGLE_CLIENT_ID !== undefined && process.env.GOOGLE_CLIENT_ID !
         scope: ['profile'],
         // state: false,
     }, async function verify(accessToken, refreshToken, profile, cb) {
-        // console.log(accessToken)
         // console.log(profile)
-        let user: User = {
-            id: profile.id,
-            // fullName: `${profile.name?.givenName || ""} ${profile.name?.familyName || ""}`,
-            first_name: profile.name?.givenName || "",
-            last_name: profile.name?.familyName || "",
-            avatar: profile?.photos !== undefined && profile?.photos[0].value || "",
-            admin: true,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-        } // await lookupUserFromOAuth(profile.id);
-        return cb(null, user);
+        let [error, data] = await lookupUserFromOAuth("google", profile.id);
+        if (!error) {
+            return cb(data as string, false);
+        }
+        // let user: User = {
+        //     id: profile.id,
+        //     // fullName: `${profile.name?.givenName || ""} ${profile.name?.familyName || ""}`,
+        //     first_name: profile.name?.givenName || "",
+        //     last_name: profile.name?.familyName || "",
+        //     avatar: profile?.photos !== undefined && profile?.photos[0].value || "",
+        //     admin: true,
+        //     enabled: true,
+        //     createdAt: new Date(),
+        //     updatedAt: new Date(),
+        // } // await lookupUserFromOAuth(profile.id);
+        return cb(null, data as User);
     }));
 } else {
     console.warn("GOOGLE_CLIENT_ID and/or GOOGLE_CLIENT_SECRET environment variables is not set or is blank. This will disable Google Login")

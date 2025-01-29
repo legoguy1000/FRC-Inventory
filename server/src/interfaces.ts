@@ -47,6 +47,7 @@ interface User {
     last_name: string;
     avatar: string;
     admin: boolean;
+    enabled: boolean;
     createdAt: Date;
     updatedAt: Date;
 }
