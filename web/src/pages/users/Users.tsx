@@ -10,6 +10,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import SaveIcon from '@mui/icons-material/Save';
 import Tooltip from '@mui/material/Tooltip';
+import Avatar from '@mui/material/Avatar';
 import {
     DataGrid,
     GridColDef,
@@ -27,6 +28,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import LinearProgress from '@mui/material/LinearProgress';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import UserService from '../../Services/UserService';
+import RenderAvatar from '../../components/RenderAvatar'
 
 
 const StyledGridOverlay = styled('div')(({ theme }) => ({
@@ -145,7 +147,20 @@ export default function UsersHome() {
     };
 
     const columns: GridColDef[] = [
-        { field: 'name', headerName: 'Name', flex: 1.5, minWidth: 200 },
+        {
+            field: 'avatar',
+            headerName: '',
+            // flex: 1,
+            // minWidth: 200,
+            renderCell: RenderAvatar,
+            valueGetter: (value, row) =>
+                row.full_name == null || row.avatar == null ? null : { name: row.full_name, color: row.avatar },
+            sortable: false,
+            filterable: false,
+            groupable: false,
+            disableExport: true,
+        },
+        { field: 'full_name', headerName: 'Name', flex: 1.5, minWidth: 200 },
         { field: 'admin', headerName: 'Admin', flex: 1.5, minWidth: 200 },
         {
             field: 'actions',
@@ -221,7 +236,7 @@ export default function UsersHome() {
                 }}
                 pageSizeOptions={[10, 20, 50]}
                 disableColumnResize={true}
-                density="compact"
+                density="comfortable"
                 slots={{
                     noRowsOverlay: CustomNoRowsOverlay,
                     toolbar: EditToolbar
