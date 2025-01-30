@@ -1,10 +1,11 @@
 import express, { Request, Response } from "express";
 import { prisma } from '../prisma'
-
+import { Request as JWTRequest } from "express-jwt";
+import { adminMiddleware } from '../config'
 
 const router = express.Router();
-
-router.get("/", async (req: Request, res: Response) => {
+router.use(adminMiddleware);
+router.get("/", async (req: JWTRequest, res: Response) => {
     const users = await prisma.user.findMany();
     res.send(users);
 });

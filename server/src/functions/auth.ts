@@ -1,5 +1,34 @@
 import { User } from '@prisma/client'
 import { prisma } from '../prisma'
+import * as crypto from 'crypto';
+
+const generateInitialAdmin = async (provider: string, id: string, data: any): Promise<boolean> => {
+    const count = await prisma.user.count();
+    if (count > 0) {
+        return false;
+    }
+    try {
+        await prisma.user.create({
+            data: {
+                first_name: data.first_name,
+                last_name: data.last_name,
+                enabled: true,
+                admin: true,
+                avatar: data.avatar,
+                OAuth: {
+                    create: [{
+                        provider: provider,
+                        providerId: id
+                    }]
+                }
+            }
+        });
+        return true
+    } catch (error) {
+        return false
+    }
+
+}
 
 const lookupUserFromOAuth = async (provider: string, id: string) => {
     try {
@@ -16,7 +45,7 @@ const lookupUserFromOAuth = async (provider: string, id: string) => {
         });
         return { error: false, user: user, message: "" }
     } catch (error) {
-        return { error: true, user: null, message: 'User is not authorized to login' } //{ error: true, message: 'User does not exist.' }
+        return { error: true, user: false, message: 'User is not authorized to login' }
     }
 }
 
@@ -25,4 +54,8 @@ const createUserFromOAuth = async (id: string) => {
     return user;
 }
 
-export { lookupUserFromOAuth, createUserFromOAuth }
+const generateRandomString = (length: number): string => {
+    return crypto.randomBytes(Math.ceil(length / 2)).toString('hex').slice(0, length);
+}
+
+export { lookupUserFromOAuth, createUserFromOAuth, generateInitialAdmin, generateRandomString }

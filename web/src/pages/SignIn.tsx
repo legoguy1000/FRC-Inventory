@@ -1,16 +1,10 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { AuthProvider, SignInPage } from '@toolpad/core/SignInPage';
-import LinearProgress from '@mui/material/LinearProgress';
+import { useState } from 'react';
+import { AuthProvider, SignInPage, AuthResponse } from '@toolpad/core/SignInPage';
 import { Navigate, useNavigate, useSearchParams } from 'react-router';
 import { useSession } from '../components/SessionContext';
 import { API_ENPOINT } from '../config';
 import { AuthService } from '../Services';
 
-
-// const fakeAuth = (): Promise<string> =>
-//     new Promise((resolve) => {
-//         setTimeout(() => resolve("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"), 250);
-//     });
 declare const window: any;
 type IWindowProps = {
     url: string;
@@ -36,11 +30,10 @@ const createPopup = ({
 };
 
 export default function SignIn() {
-    const { session, setSession, token, setToken, loading } = useSession();
+    const { session, setToken } = useSession();
     const [searchParams, setSearchParams] = useSearchParams();
     const [externalWindow, setExternalWindow] = useState<Window | null>(null);
-    const [loginData, setLoginData] = useState("");
-    const intervalRef = useRef<number>(0);
+    let intervalRef: NodeJS.Timeout | null = null;
     const navigate = useNavigate();
 
     let authProviders: AuthProvider[] = [];
@@ -56,101 +49,77 @@ export default function SignIn() {
     }
 
     const handleLogin = {
-        google: async (code: string): Promise<{ token: string }> => {
+        google: async (code: string) => {
             return await AuthService.loginWithGoogle(code);
             // let token: string = login.token;
         }
     }
 
     const clearTimer = () => {
-        window.clearInterval(intervalRef.current);
+        window.clearInterval(intervalRef);
     };
 
-    useEffect(() => {
-        if (externalWindow) {
-            console.log(externalWindow)
-            intervalRef.current = window.setInterval(() => {
-                console.log("checking for code")
-                try {
-                    let data = localStorage.getItem('loginData')
-                    if (data !== null && data !== "") {
-                        console.log(data)
-                        setLoginData(data)
-                        clearTimer();
-                    }
-                } catch (error) {
-                    console.log(error)
-                    clearTimer();
-                }
-                try {
-                    if (externalWindow !== null && externalWindow.closed) {
-                        clearTimer();
-                    }
-                } catch (error) {
-                    console.log(error)
-                }
-            }, 700);
-        }
-    }, [externalWindow]);
-
-    useEffect(() => {
-        console.log(loginData)
-        if (loginData === null || loginData === "") {
-            return
-        }
-        let { code, provider, state } = JSON.parse(loginData)
-        handleLogin[provider as LoginProviders](code).then((login) => {
-            console.log(login)
-            let redirectTo = '/home';
-            if (state !== null && state !== "") {
-                let stateDict = JSON.parse(atob(state).toString());
-                redirectTo = stateDict.origin || "/";
-            }
-            // setToken(login.token);
-            navigate(redirectTo, { replace: true });
-            setLoginData("")
-            setExternalWindow(null)
-            localStorage.setItem('loginData', '');
-        });
-    }, [loginData])
     return (
-        <SignInPage
-            providers={authProviders}
-            signIn={async (provider, formData, callbackUrl) => {
-                try {
-                    if (provider.id === 'google') {
-                        const authUrl = `${API_ENPOINT}/auth/login/google?origin=${searchParams.get('callbackUrl')}`;
-                        // window.location.href = authUrl;
-                        // navigate(authUrl, { replace: true })
-                        setExternalWindow(createPopup({
-                            url: authUrl, title: 'OAuth Popup', width: 600, height: 400,
-                        }));
-                        console.log('asdf')
-                        // const popup = window.open(authUrl, 'OAuth Popup', 'width=600,height=400');
-                        // let token = await fakeAuth();
-                        // result = { success: true, token: token, error: "" }
+        <div>
+            <SignInPage
+                providers={authProviders}
+                signIn={async (provider, formData, callbackUrl) => {
+                    try {
+                        if (provider.id === 'google') {
+                            const authUrl = `${API_ENPOINT}/auth/login/google?origin=${searchParams.get('callbackUrl')}`;
+                            setExternalWindow(createPopup({
+                                url: authUrl, title: 'OAuth Popup', width: 600, height: 400,
+                            }));
+                        }
+                    } catch (error) {
+                        // return {
+                        //     error: error instanceof Error ? error.message : 'An error occurred',
+                        // };
                     }
-                    // if (result?.success && result?.token) {
-                    //     // Convert Firebase user to Session format
-                    //     // const userSession: Session = {
-                    //     //     user: {
-                    //     //         name: result.user.displayName || '',
-                    //     //         email: result.user.email || '',
-                    //     //         image: result.user.photoURL || '',
-                    //     //     },
-                    //     //     token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
-                    //     // };
-                    //     setToken(result.token);
-                    //     navigate(decodeURIComponent(callbackUrl || '/'), { replace: true });
-                    // }
-                    // return { error: result?.error || 'Failed to sign in' };
-                } catch (error) {
-                    // return {
-                    //     error: error instanceof Error ? error.message : 'An error occurred',
-                    // };
-                }
-                return { success: "asdfadsf" };
-            }}
-        />
+                    return new Promise<AuthResponse>((resolve) => {
+                        let counter = 0;
+                        intervalRef = setInterval(() => {
+                            counter++;
+                            console.log(externalWindow)
+                            console.log("checking for code")
+                            try {
+                                let data = localStorage.getItem('loginData')
+                                if (data !== null && data !== "") {
+                                    console.log(data)
+                                    clearTimer();
+                                    let { code, provider, state } = JSON.parse(data)
+                                    handleLogin[provider as LoginProviders](code).then((login) => {
+                                        console.log(login)
+                                        let redirectTo = '/home';
+                                        if (state !== null && state !== "") {
+                                            let stateDict = JSON.parse(atob(state).toString());
+                                            redirectTo = stateDict.origin || "/";
+                                        }
+                                        // setToast({ message: login.message, open: true, severity: login.error ? "error" : "success" })
+                                        if (!login.error && login.token !== null) {
+                                            resolve({ success: login.message });
+                                            setToken(login.token);
+                                            window.setTimeout(() => {
+                                                navigate(redirectTo, { replace: true });
+                                            }, 1000);
+                                        } else {
+                                            resolve({ error: login.message });
+                                        }
+                                        setExternalWindow(null)
+                                        localStorage.setItem('loginData', '');
+                                    });
+                                }
+                            } catch (error) {
+                                console.log(error)
+                                clearTimer();
+                            }
+                            if (counter == 60) {
+                                clearTimer();
+                            }
+                        }, 1000);
+                    });
+                }}
+            />
+        </div>
     );
 }

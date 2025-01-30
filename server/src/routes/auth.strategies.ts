@@ -1,6 +1,6 @@
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import passport from "passport";
-import { lookupUserFromOAuth } from "../functions/auth";
+import { lookupUserFromOAuth, generateInitialAdmin } from "../functions/auth";
 import { User } from "@prisma/client";
 
 if (process.env.SITE_URL === undefined || process.env.SITE_URL === '') {
@@ -16,6 +16,12 @@ if (process.env.GOOGLE_CLIENT_ID !== undefined && process.env.GOOGLE_CLIENT_ID !
         // state: false,
     }, async function verify(accessToken, refreshToken, profile, cb) {
         // console.log(profile)
+        let profileData = {
+            first_name: profile.name?.givenName || "",
+            last_name: profile.name?.familyName || "",
+            avatar: profile?.photos !== undefined && profile?.photos[0].value || "",
+        }
+        await generateInitialAdmin("google", profile.id, profileData);
         let { error, user, message } = await lookupUserFromOAuth("google", profile.id);
         if (error) {
             return cb(null, false, { message: message });

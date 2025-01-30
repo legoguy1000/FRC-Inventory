@@ -20,10 +20,10 @@ function test() {
             <AccountPreview variant="expanded" />
             {session.session?.org && (
                 <Stack mb={1}>
-                    <Typography textAlign="center" fontSize="0.625rem" gutterBottom>
-                        This account is managed by
+                    <Typography textAlign="center" fontSize="1rem" gutterBottom>
+                        {session?.session?.admin && <div>Admin</div>}
                     </Typography>
-                    <Box display="flex" justifyContent="center" alignItems="center" gap={2}>
+                    {/* <Box display="flex" justifyContent="center" alignItems="center" gap={2}>
                         <Avatar
                             variant="square"
                             src={orgLogo}
@@ -43,7 +43,7 @@ function test() {
                                 {orgUrl}
                             </Link>
                         </Stack>
-                    </Box>
+                    </Box> */}
                 </Stack>
             )}
             <Divider />

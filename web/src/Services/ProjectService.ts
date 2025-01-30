@@ -1,10 +1,10 @@
 import axios from 'axios';
-import { axios_config, API_ENPOINT } from '../config';
+import { axiosHttp, API_ENPOINT } from '../config';
 
 const ProjectService = {
     getProjects: async () => {
         try {
-            const response = await axios.get(`${API_ENPOINT}/projects`, axios_config);
+            const response = await axiosHttp.get(`projects`);
             return response.data;
         } catch (error: any) {
             return error.response.data;
@@ -12,7 +12,7 @@ const ProjectService = {
     },
     addProject: async (data: { name: string, owner: string | undefined }) => {
         try {
-            const response = await axios.post(`${API_ENPOINT}/projects`, data, axios_config);
+            const response = await axiosHttp.post(`projects`, data);
             return response.data;
         } catch (error: any) {
             return error.response.data;
@@ -20,7 +20,7 @@ const ProjectService = {
     },
     editProject: async (projectId: string, data: { name: string, owner: string | undefined }) => {
         try {
-            const response = await axios.put(`${API_ENPOINT}/projects/${projectId}`, data, axios_config);
+            const response = await axiosHttp.put(`projects/${projectId}`, data);
             return response.data;
         } catch (error: any) {
             return error.response.data;
@@ -28,7 +28,7 @@ const ProjectService = {
     },
     deleteProject: async (projectId: string) => {
         try {
-            const response = await axios.delete(`${API_ENPOINT}/projects/${projectId}`, axios_config);
+            const response = await axiosHttp.delete(`projects/${projectId}`);
             return response.data;
         } catch (error: any) {
             return error.response.data;

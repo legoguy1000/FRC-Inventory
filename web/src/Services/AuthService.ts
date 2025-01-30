@@ -1,13 +1,19 @@
 import axios from 'axios';
-import { axios_config, API_ENPOINT } from '../config';
+import { axiosHttp, API_ENPOINT } from '../config';
+
+interface AuthResponse {
+    message: string;
+    token: string;
+    error: boolean;
+}
 
 const AuthService = {
     isLoggedIn: function () {
         return false;
     },
-    loginWithGoogle: async (code: string) => {
+    loginWithGoogle: async (code: string): Promise<AuthResponse> => {
         try {
-            const response = await axios.post(`${API_ENPOINT}/auth/redirect/google`, { code: code }, axios_config);
+            const response = await axiosHttp.post(`auth/redirect/google`, { code: code });
             return response.data;
         } catch (error: any) {
             return error.response.data;

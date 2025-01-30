@@ -23,8 +23,10 @@ export default function Layout() {
 
     //     return <Navigate to={redirectTo} replace />;
     // }
+
+    // slots={{ toolbarAccount: UserOrg }}
     return (
-        <DashboardLayout sx={{ flex: 1 }} slots={{ toolbarAccount: UserOrg }}>
+        <DashboardLayout sx={{ flex: 1 }}>
             <PageContainer style={{ maxWidth: "unset" }}>
                 <Outlet />
             </PageContainer>

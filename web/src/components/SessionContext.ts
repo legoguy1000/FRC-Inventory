@@ -5,11 +5,11 @@ import { Session } from '@toolpad/core/AppProvider';
 // import { useSession } from '@toolpad/core/useSession';
 
 export interface CustomSession extends Session {
-    org: {
-        name: string;
-        url: string;
-        logo: string;
-    };
+    // org: {
+    //     name: string;
+    //     url: string;
+    //     logo: string;
+    // };
     admin: boolean;
 }
 

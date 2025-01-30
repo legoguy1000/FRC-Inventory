@@ -18,16 +18,13 @@ export default function Callback() {
     const state = params.get('state');
 
     useEffect(() => {
-        console.log(provider)
         if (code) {
-            console.log(code)
             localStorage.setItem('loginData', JSON.stringify({
                 code: code,
                 provider: provider,
                 state: state || ""
             }));
             window.close();
-            // handleLogin[provider as LoginProviders](code)
         }
     }, [code]);
 
@@ -37,8 +34,9 @@ export default function Callback() {
             open={true}
         >
             <Stack alignItems="center">
-                <div style={{ fontSize: "xxx-large" }}>Processing Authentication......</div>
+                <div style={{ fontSize: "xxx-large" }}>Processing</div>
                 <CircularProgress color="primary" size="30vh" />
+                <div style={{ fontSize: "xxx-large" }}>Authentication......</div>
             </Stack>
         </Backdrop>
     </div>;

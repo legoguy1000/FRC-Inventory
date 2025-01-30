@@ -66,8 +66,6 @@ const buildNavBar = (session: CustomSession | null) => {
     if (session !== null && session?.admin) {
         nav.push(NAVIGATION_ADMIN)
     }
-    console.log("building NAV")
-    console.log(nav)
     return nav;
 }
 export default function App(props: { disableCustomTheme?: boolean }) {
@@ -88,7 +86,6 @@ export default function App(props: { disableCustomTheme?: boolean }) {
     );
     // let sideBarNav: Navigation = [];
     useEffect(() => {
-        console.log(token)
         if (token != null && token !== "") {
             try {
                 const decoded = jwtDecode<InventoryJwtPayload>(token);
@@ -96,22 +93,12 @@ export default function App(props: { disableCustomTheme?: boolean }) {
                 setSession({
                     user: {
                         id: decoded.id,
-                        name: `${decoded.first_name || ""} ${decoded.last_name || ""}`,
+                        name: decoded.full_name,
                         image: decoded.avatar,
-                        // first_name: decoded.first_name || "",
-                        // last_name: decoded.last_name || "",
-                    },
-                    org: {
-                        name: 'MUI Inc.',
-                        url: 'https://mui.com',
-                        logo: 'https://mui.com/static/logo.svg',
                     },
                     admin: decoded.admin
-                    // token: token
                 })
-                console.log(decoded);
                 localStorage.setItem('token', token);
-                console.log(session)
             } catch (error) {
                 setSession(null)
                 localStorage.setItem('token', "");
@@ -129,7 +116,7 @@ export default function App(props: { disableCustomTheme?: boolean }) {
             navigate('/')
             localStorage.setItem('token', "");
             setToken(null)
-            // setSession(null)
+            setSession(null)
         },
     };
     useEffect(() => {
@@ -138,23 +125,6 @@ export default function App(props: { disableCustomTheme?: boolean }) {
         if (token != null && token !== "") {
             setToken(token);
         }
-        // Returns an `unsubscribe` function to be called during teardown
-        // const unsubscribe = onAuthStateChanged((user: User | null) => {
-        //     if (user) {
-        //         setSession({
-        //             user: {
-        //                 name: user.displayName || '',
-        //                 email: user.email || '',
-        //                 image: user.photoURL || '',
-        //             },
-        //         });
-        //     } else {
-        //         setSession(null);
-        //     }
-        //     setLoading(false);
-        // });
-
-        // return () => unsubscribe();
     }, []);
     useEffect(() => {
         setSideBarNav(buildNavBar(session));
