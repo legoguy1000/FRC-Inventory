@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { config, API_ENPOINT } from './config';
+import { axiosHttp, API_ENPOINT } from '../config';
 import { Part } from '../../../server/src/interfaces';
 
 type Optional<T, K extends keyof T> = Pick<Partial<T>, K> & Omit<T, K>;
@@ -11,7 +11,7 @@ export const PartService = {
     getParts: async (inventory: boolean = false) => {
         try {
             let params = new URLSearchParams({ inventory: `${inventory}` });
-            const response = await axios.get(`${API_ENPOINT}/parts?${params}`, config);
+            const response = await axiosHttp.get(`parts?${params}`);
             return response.data;
         } catch (error: any) {
             return error.response.data;
@@ -19,7 +19,7 @@ export const PartService = {
     },
     addPart: async (data: PartCreate) => {
         try {
-            const response = await axios.post(`${API_ENPOINT}/parts/`, data, config);
+            const response = await axiosHttp.post(`parts/`, data);
             return response.data;
         } catch (error: any) {
             return error.response.data;
@@ -27,7 +27,7 @@ export const PartService = {
     },
     bulkAdd: async (data: PartCreate[]) => {
         try {
-            const response = await axios.post(`${API_ENPOINT}/parts/bulk`, { parts: data }, config);
+            const response = await axiosHttp.post(`parts/bulk`, { parts: data });
             return response.data;
         } catch (error: any) {
             return error.response.data;
@@ -35,7 +35,7 @@ export const PartService = {
     },
     editPart: async (partId: string, data: PartCreate) => {
         try {
-            const response = await axios.put(`${API_ENPOINT}/parts/${partId}`, data, config);
+            const response = await axiosHttp.put(`parts/${partId}`, data);
             return response.data;
         } catch (error: any) {
             return error.response.data;
@@ -43,7 +43,7 @@ export const PartService = {
     },
     deletePart: async (partId: string) => {
         try {
-            const response = await axios.delete(`${API_ENPOINT}/parts/${partId}`, config);
+            const response = await axiosHttp.delete(`parts/${partId}`);
             return response.data;
         } catch (error: any) {
             return error.response.data;
@@ -51,15 +51,15 @@ export const PartService = {
     },
     getCategories: async () => {
         try {
-            const response = await axios.get(`${API_ENPOINT}/parts/categories`, config);
-            return response.data;
+            const response = await axiosHttp.get(`parts/categories`);
+            return response.data; axiosHttp
         } catch (error: any) {
             return error.response.data;
         }
     },
     getLocations: async () => {
         try {
-            const response = await axios.get(`${API_ENPOINT}/parts/locations`, config);
+            const response = await axiosHttp.get(`parts/locations`);
             return response.data;
         } catch (error: any) {
             return error.response.data;

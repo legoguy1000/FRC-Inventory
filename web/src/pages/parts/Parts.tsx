@@ -148,7 +148,7 @@ export default function ProjectsHome() {
         return (
             <GridToolbarContainer>
                 <Tooltip title="Export current parts list to CSV">
-                    <Button color="primary" startIcon={<CloudDownloadIcon />} href={`${API_ENPOINT}/parts/export`} target='_blank' />
+                    <Button color="primary" startIcon={<CloudDownloadIcon />} href={`parts/export`} target='_blank' />
                 </Tooltip>
                 <Tooltip title="Uploade Parts List">
                     <Button color='primary' startIcon={<CloudUploadIcon />}

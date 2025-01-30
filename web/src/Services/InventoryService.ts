@@ -1,10 +1,10 @@
 import axios from 'axios';
-import { config, API_ENPOINT } from './config';
+import { axiosHttp, API_ENPOINT } from '../config';
 
 const InventoryService = {
     getInvetory: async () => {
         try {
-            const response = await axios.get(`${API_ENPOINT}/inventory`, config);
+            const response = await axiosHttp.get(`inventory`);
             return response.data;
         } catch (error: any) {
             return error.response.data;

@@ -6,7 +6,15 @@
 nameOverride: ""
 fullnameOverride: ""
 
+authentication:
+  google:
+    enabled: true
+    clientId:
+    clientSecret:
+
 web:
+  apiUrl: /api
+  websiteTitle: Title
   # This will set the replicaset count more information can be found here: https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/
   replicaCount: 1
 
@@ -100,6 +108,7 @@ web:
   affinity: {}
 
 server:
+  jwtSecretKey:
   # This will set the replicaset count more information can be found here: https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/
   replicaCount: 1
 
