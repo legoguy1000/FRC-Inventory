@@ -71,7 +71,7 @@ spec:
             - name: DATABASE_URL
               value: postgresql://{{ .Values.postgres.user }}:{{ .Values.postgres.password }}@{{ include "helm.fullname" . }}-postgres:{{ .Values.postgres.service.port }}/{{ .Values.postgres.db }}?schema=public
             - name: SITE_URL
-              value: https://{{ .Values.ingress.host | quote }}
+              value: https://{{ .Values.ingress.host }}
             {{- if .Values.authentication.google.enabled }}
             - name: GOOGLE_CLIENT_ID
               value: "{{ .Values.authentication.google.clientId }}"

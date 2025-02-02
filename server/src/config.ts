@@ -23,13 +23,6 @@ export const adminMiddleware = (req: JWTRequest, res: Response, next: NextFuncti
     next();
 }
 
-export const unless = (middleware: Middleware, ...paths: string[]) => {
-    return (req: IPathRequest, res: Response, next: NextFunction) => {
-        console.log(req.path)
-        paths.some(path => path === req.path) ? next() : middleware(req, res, next);
-    }
-}
-
 export const pathRegex = (path: string): RegExp => {
     return pathToRegexp(path).regexp;
 }
