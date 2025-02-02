@@ -36,7 +36,8 @@ app.use(expressjwt({
     },
 }).unless({
     path: [
-        pathRegex('/auth{/*path}')
+        pathRegex('/auth{/*path}'),
+        pathRegex('/ready')
     ]
 }));
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
@@ -45,6 +46,14 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
             error: true,
             message: 'No token provided.'
         });
+    }
+});
+app.get('/ready', async (req, res) => {
+    try {
+        await prisma.$queryRaw`SELECT 1`;
+        res.status(200).send('OK');
+    } catch (error) {
+        res.status(500).send('Not Ready');
     }
 });
 app.get("/", async (req: Request, res: Response) => {
