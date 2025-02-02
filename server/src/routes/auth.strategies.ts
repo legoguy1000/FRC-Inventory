@@ -1,6 +1,6 @@
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import passport from "passport";
-import { lookupUserFromOAuth, generateInitialAdmin } from "../functions/auth";
+import { lookupUserFromOAuth, generateInitialAdmin, createUserFromGoogle } from "../functions/auth";
 import { User } from "@prisma/client";
 
 if (process.env.SITE_URL === undefined || process.env.SITE_URL === '') {
@@ -23,7 +23,15 @@ if (process.env.GOOGLE_CLIENT_ID !== undefined && process.env.GOOGLE_CLIENT_ID !
         }
         await generateInitialAdmin("google", profile.id, profileData);
         let { error, user, message } = await lookupUserFromOAuth("google", profile.id);
-        if (error) {
+        if (error && !user) {
+            const user = await createUserFromGoogle({
+                first_name: profile.name?.givenName || "",
+                last_name: profile.name?.familyName || "",
+                avatar: profile?.photos !== undefined && profile?.photos[0].value || "",
+                id: profile.id
+            })
+            return cb(null, false, { message: "User account has been created but not enabled. Please talk to the system admins to enable your account." });
+        } else if (error && user) {
             return cb(null, false, { message: message });
         }
         // let user: User = {

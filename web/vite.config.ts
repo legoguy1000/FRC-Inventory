@@ -10,10 +10,11 @@ export default defineConfig({
         },
         headers: {
             "Cross-Origin-Opener-Policy": "same-origin-allow-popups",
+            'Access-Control-Allow-Origin': '*',
         },
         cors: {
             // the origin you will be accessing via browser
-            origin: 'http://localhost:3000',
+            origin: '*',
         },
         proxy: {
             '/api': {

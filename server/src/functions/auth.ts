@@ -27,14 +27,12 @@ const generateInitialAdmin = async (provider: string, id: string, data: any): Pr
     } catch (error) {
         return false
     }
-
 }
 
 const lookupUserFromOAuth = async (provider: string, id: string) => {
     try {
         const user = await prisma.user.findFirstOrThrow({
             where: {
-                enabled: true,
                 OAuth: {
                     some: {
                         provider: provider,
@@ -43,9 +41,35 @@ const lookupUserFromOAuth = async (provider: string, id: string) => {
                 }
             }
         });
+        if (!user.enabled) {
+            return { error: true, user: user, message: "User account is not enabled. Please contact system admins to enable your account." }
+        }
         return { error: false, user: user, message: "" }
     } catch (error) {
-        return { error: true, user: false, message: 'User is not authorized to login' }
+        return { error: true, user: false, message: 'User account does not exist' }
+    }
+}
+
+const createUserFromGoogle = async (data: any): Promise<User | null> => {
+    try {
+        const user = await prisma.user.create({
+            data: {
+                first_name: data.first_name,
+                last_name: data.last_name,
+                enabled: false,
+                admin: false,
+                avatar: data.avatar,
+                OAuth: {
+                    create: [{
+                        provider: "google",
+                        providerId: data.id
+                    }]
+                }
+            }
+        });
+        return user;
+    } catch (error) {
+        return null;
     }
 }
 
@@ -58,4 +82,10 @@ const generateRandomString = (length: number): string => {
     return crypto.randomBytes(Math.ceil(length / 2)).toString('hex').slice(0, length);
 }
 
-export { lookupUserFromOAuth, createUserFromOAuth, generateInitialAdmin, generateRandomString }
+export {
+    lookupUserFromOAuth,
+    createUserFromOAuth,
+    generateInitialAdmin,
+    generateRandomString,
+    createUserFromGoogle
+}
