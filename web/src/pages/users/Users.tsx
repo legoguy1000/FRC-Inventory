@@ -1,16 +1,14 @@
 import { useState, useEffect } from 'react';
 import { User as UserInterface } from '../../../../server/src/interfaces'
-import { ProjectService } from '../../Services';
+import { UserService } from '../../Services';
 import { Stack } from '@mui/material';
-import { styled } from '@mui/material/styles';
-import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/DeleteOutlined';
+import LockIcon from '@mui/icons-material/Lock';
+import LockOpenIcon from '@mui/icons-material/LockOpen';
 import SaveIcon from '@mui/icons-material/Save';
 import Tooltip from '@mui/material/Tooltip';
-import Avatar from '@mui/material/Avatar';
 import {
     DataGrid,
     GridColDef,
@@ -24,42 +22,47 @@ import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import LinearProgress from '@mui/material/LinearProgress';
 import RefreshIcon from '@mui/icons-material/Refresh';
-import UserService from '../../Services/UserService';
 import RenderAvatar from '../../components/RenderAvatar'
 import { CustomNoRowsOverlay } from '../../internals/components/CustomOverlays'
 import Chip from '@mui/material/Chip';
+import Moment from 'moment';
 
 function renderStatus(params: UserInterface) {
     if (params == null || params.enabled === undefined) {
         return '';
     }
-    return <Chip label={`${params.enabled ? "ENABLED" : "DISABLED"}`} color={params.enabled ? 'success' : 'error'} size="small" />;
+    return <Chip label={`${params.enabled ? "Enabled" : "Disabled"}`} color={params.enabled ? 'success' : 'error'} size="small" />;
+}
+function renderAdmin(params: UserInterface) {
+    if (params == null || params.admin === undefined) {
+        return '';
+    }
+    return <Chip label={`${params.admin ? "Admin" : "User"}`} color={params.admin ? 'secondary' : 'primary'} size="small" />;
 }
 
-const DEACTIVATE_USER_TOOLTIP = "Deactivate a User"
+const DEACTIVATE_USER_TOOLTIP = "Disable User"
+const ACTIVATE_USER_TOOLTIP = "Enable User"
 
 export default function UsersHome() {
     const [loading, setLoading] = useState(false);
     const [editLoading, setEditLoading] = useState(false);
     const [data, setData] = useState<UserInterface[]>([]);
-    const [editProject, setEditProject] = useState<{ id: string | undefined, name: string | undefined, owner: string | undefined }>();
+    const [editUser, setEditUser] = useState<{ id?: string, name?: string, email?: string }>();
     const [openDialog, setOpenDialog] = useState(false);
-    const [confirmDeleteDialog, setConfirmDeleteDialog] = useState(false);
     const [editError, setEditError] = useState<{ error: boolean, message: string | undefined, data: { field: string } | undefined } | undefined>({ error: false, message: "", data: { field: "" } });
-
+    Moment.locale('en');
 
     const EditToolbar = (props: GridSlotProps['toolbar']) => {
-        const handleClick = () => {
+        const addUserButton = () => {
             setOpenDialog(true);
-            setEditProject(undefined);
+            setEditUser(undefined);
         };
         return (
             <GridToolbarContainer>
-                <Button color="primary" startIcon={<AddIcon />} onClick={handleClick} sx={{ marginLeft: 'auto' }}>
+                <Button color="primary" startIcon={<AddIcon />} onClick={addUserButton} sx={{ marginLeft: 'auto' }}>
                     Add User
                 </Button>
                 <Button color="primary" startIcon={<RefreshIcon />} onClick={loadUsers}>
@@ -73,34 +76,22 @@ export default function UsersHome() {
         setEditLoading(false);
         setEditError(undefined);
         setOpenDialog(false);
-        setConfirmDeleteDialog(false)
     };
 
     const handleEditClick = (params: GridRowParams) => () => {
-        // setEditProject({ id: params.row.id, name: params.row.name, owner: params.row.owner });
-        // setOpenDialog(true);
+        setEditUser({ id: params.row.id, email: params.row.email, name: params.row.name });
+        setOpenDialog(true);
     };
 
-    const handleDeleteClick = (params: GridRowParams) => () => {
-        // setEditProject({ id: params.row.id, name: params.row.name, owner: params.row.owner });
-        // setConfirmDeleteDialog(true);
-    };
-
-    const deactivateUser = async () => {
-        // setEditLoading(true);
-        // if (editProject === undefined || editProject.id === undefined) {
-        //     setEditLoading(false);
-        //     return
-        // }
-        // const resp = await ProjectService.deleteProject(editProject.id);
-        // setEditLoading(false);
-        // if (!resp.error) {
-        //     closeDialog();
-        //     setEditError({ error: false, message: undefined, data: undefined });
-        // } else {
-        //     setEditError({ error: true, message: resp.message, data: resp.data });
-        // }
+    const handleDisableClick = (params: GridRowParams) => async () => {
+        let user: UserInterface = params.row
+        if (user.enabled) {
+            let resp = await UserService.disableUser(user.id);
+        } else {
+            let resp = await UserService.enableUser(user.id);
+        }
         loadUsers();
+        // setEditUser({ id: params.row.id, name: params.row.name, owner: params.row.owner });
     };
 
     const columns: GridColDef[] = [
@@ -111,17 +102,18 @@ export default function UsersHome() {
             // minWidth: 200,
             renderCell: RenderAvatar,
             valueGetter: (value, row) =>
-                row.full_name == null || row.avatar == null ? null : { name: row.full_name, avatar: row.avatar },
+                row.name == null || row.avatar == null ? null : { name: row.name, avatar: row.avatar },
             sortable: false,
             filterable: false,
             groupable: false,
             disableExport: true,
         },
-        { field: 'full_name', headerName: 'Name', flex: 1.5, minWidth: 200 },
+        { field: 'name', headerName: 'Name', flex: 1.5, minWidth: 200 },
+        { field: 'email', headerName: 'Email', flex: 1.5, minWidth: 200 },
         {
             field: 'admin',
             headerName: 'Admin',
-            // renderCell: renderStatus,
+            renderCell: (params) => renderAdmin(params.row as any),
             flex: 1.5,
             minWidth: 200
         },
@@ -129,6 +121,13 @@ export default function UsersHome() {
             field: 'enabled',
             headerName: 'Enabled',
             renderCell: (params) => renderStatus(params.row as any),
+            flex: 1.5,
+            minWidth: 200
+        },
+        {
+            field: 'lastLogin',
+            headerName: 'Last Login',
+            renderCell: (params) => new Date((params.row as any).lastLogin).toLocaleString(),
             flex: 1.5,
             minWidth: 200
         },
@@ -141,18 +140,18 @@ export default function UsersHome() {
             getActions: (params: GridRowParams) => {
                 return [
                     <GridActionsCellItem
-                        icon={<Tooltip title="Edit Project"><EditIcon /></Tooltip>}
+                        icon={<Tooltip title="Edit User"><EditIcon /></Tooltip>}
                         label="Edit"
                         className="textPrimary"
                         onClick={handleEditClick(params)}
                         color="inherit"
                     />,
-                    <Tooltip title={DEACTIVATE_USER_TOOLTIP}>
+                    <Tooltip title={(params.row as UserInterface).enabled ? DEACTIVATE_USER_TOOLTIP : ACTIVATE_USER_TOOLTIP}>
                         <span>
                             <GridActionsCellItem
-                                icon={<DeleteIcon />}
+                                icon={(params.row as UserInterface).enabled ? <LockIcon /> : <LockOpenIcon />}
                                 label="Delete"
-                                onClick={handleDeleteClick(params)}
+                                onClick={handleDisableClick(params)}
                                 color="inherit"
                             />
                         </span>
@@ -251,9 +250,9 @@ export default function UsersHome() {
                         const formJson = Object.fromEntries((formData as any).entries());
                         let resp;
                         if (formJson.id !== undefined && formJson.id !== '') {
-                            resp = await ProjectService.editProject(formJson.id, { name: formJson.name, owner: formJson.owner });
+                            resp = await UserService.editUser(formJson.id, { email: formJson.email });
                         } else {
-                            resp = await ProjectService.addProject({ name: formJson.name, owner: formJson.owner });
+                            resp = await UserService.addUser({ email: formJson.email });
                         }
                         setEditLoading(false);
                         if (!resp.error) {
@@ -266,37 +265,27 @@ export default function UsersHome() {
                     },
                 }}
             >
-                <DialogTitle>{editProject !== undefined && editProject?.id !== '' && `Edit Project ${editProject?.name}` || 'Add new Project'}</DialogTitle>
+                <DialogTitle>{editUser !== undefined && editUser?.id !== '' && `Edit User ${editUser?.name}` || 'Add new Users'}</DialogTitle>
                 <DialogContent>
                     {editLoading && <LinearProgress />}
-                    <DialogContentText>
+                    {/* <DialogContentText>
                         To subscribe to this website, please enter your email address here. We
                         will send updates occasionally.
-                    </DialogContentText>
-                    <input type="hidden" name="id" value={editProject?.id === null ? '' : editProject?.id} />
+                    </DialogContentText> */}
+                    <input type="hidden" name="id" value={editUser?.id === null ? '' : editUser?.id} />
                     <TextField
                         autoFocus
                         required
                         margin="dense"
-                        id="name"
-                        name="name"
-                        label="Project Name"
+                        id="email"
+                        name="email"
+                        label="Email"
                         type="text"
                         fullWidth
                         variant="standard"
-                        defaultValue={editProject?.name === null ? '' : editProject?.name}
-                        error={editError?.data?.field === 'name'}
+                        defaultValue={editUser?.email === null ? '' : editUser?.email}
+                        error={editError?.data?.field === 'email'}
                         helperText={editError?.message}
-                    />
-                    <TextField
-                        margin="dense"
-                        id="owner"
-                        name="owner"
-                        label="Project Owner"
-                        type="text"
-                        fullWidth
-                        variant="standard"
-                        defaultValue={editProject?.owner === null ? '' : editProject?.owner}
                     />
                 </DialogContent>
                 <DialogActions>
@@ -307,28 +296,6 @@ export default function UsersHome() {
                         loadingPosition="start"
                         startIcon={<SaveIcon />}>
                         Save
-                    </Button>
-                </DialogActions>
-            </Dialog>
-            {/* Delete project confirmation dialog */}
-            <Dialog
-                open={confirmDeleteDialog}
-                onClose={closeDialog}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
-            >
-                <DialogTitle id="alert-dialog-title">
-                    Are you sure you want to delete Project {editProject?.name}?
-                </DialogTitle>
-                <DialogContent>
-                    <DialogContentText id="alert-dialog-description">
-                        This action is permanant. Project cannot be deleted until all parts assigned to the project are unassigned and returned to the inventory.
-                    </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={closeDialog} autoFocus>Cancel</Button>
-                    <Button onClick={deactivateUser} color='error'>
-                        Delete
                     </Button>
                 </DialogActions>
             </Dialog>

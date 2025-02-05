@@ -11,6 +11,10 @@ authentication:
     enabled: true
     clientId:
     clientSecret:
+  github:
+    enabled: true
+    clientId:
+    clientSecret:
 
 web:
   apiUrl: /api

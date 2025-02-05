@@ -78,6 +78,12 @@ spec:
             - name: GOOGLE_CLIENT_SECRET
               value: "{{ .Values.authentication.google.clientSecret }}"
             {{- end }}
+            {{- if .Values.authentication.github.enabled }}
+            - name: GITHUB_CLIENT_ID
+              value: "{{ .Values.authentication.github.clientId }}"
+            - name: GITHUB_CLIENT_SECRET
+              value: "{{ .Values.authentication.github.clientSecret }}"
+            {{- end }}
             - name: JWT_SECRET_KEY
               value: "{{ .Values.server.jwtSecretKey }}"
           ports:

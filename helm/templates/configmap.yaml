@@ -9,4 +9,5 @@ data:
   config.js: |-
     var BASE_URL = "{{ .Values.web.apiUrl }}";
     var GOOGLE_OAUTH_ENABLED = {{ .Values.authentication.google.enabled }}
+    var GITHUB_OAUTH_ENABLED = {{ .Values.authentication.github.enabled }}
     var WEBSITE_TITLE = "{{ .Values.web.websiteTitle }}"

@@ -2,7 +2,7 @@ import { User } from '@prisma/client'
 import { prisma } from '../prisma'
 import * as crypto from 'crypto';
 
-const generateInitialAdmin = async (provider: string, id: string, data: any): Promise<boolean> => {
+export const generateInitialAdmin = async (data: any): Promise<boolean> => {
     const count = await prisma.user.count();
     if (count > 0) {
         return false;
@@ -10,17 +10,11 @@ const generateInitialAdmin = async (provider: string, id: string, data: any): Pr
     try {
         await prisma.user.create({
             data: {
-                first_name: data.first_name,
-                last_name: data.last_name,
+                name: data.name,
+                email: data.email,
                 enabled: true,
                 admin: true,
-                avatar: data.avatar,
-                OAuth: {
-                    create: [{
-                        provider: provider,
-                        providerId: id
-                    }]
-                }
+                avatar: data.avatar
             }
         });
         return true
@@ -29,42 +23,32 @@ const generateInitialAdmin = async (provider: string, id: string, data: any): Pr
     }
 }
 
-const lookupUserFromOAuth = async (provider: string, id: string) => {
+export const lookupUserFromOAuth = async (email: string) => {
     try {
         const user = await prisma.user.findFirstOrThrow({
             where: {
-                OAuth: {
-                    some: {
-                        provider: provider,
-                        providerId: id
-                    }
-                }
+                email: email
             }
         });
         if (!user.enabled) {
-            return { error: true, user: user, message: "User account is not enabled. Please contact system admins to enable your account." }
+            return { error: true, user: null, message: "User account is not enabled. Please contact system admins to enable your account." }
         }
         return { error: false, user: user, message: "" }
     } catch (error) {
-        return { error: true, user: false, message: 'User account does not exist' }
+        return { error: true, user: null, message: 'User account does not exist' }
     }
 }
 
-const createUserFromGoogle = async (data: any): Promise<User | null> => {
+export const updateUserFromOAuth = async (id: string, data: any): Promise<User | null> => {
     try {
-        const user = await prisma.user.create({
+        const user = await prisma.user.update({
+            where: {
+                id: id
+            },
             data: {
-                first_name: data.first_name,
-                last_name: data.last_name,
-                enabled: false,
-                admin: false,
+                name: data.name,
                 avatar: data.avatar,
-                OAuth: {
-                    create: [{
-                        provider: "google",
-                        providerId: data.id
-                    }]
-                }
+                lastLogin: new Date()
             }
         });
         return user;
@@ -73,19 +57,11 @@ const createUserFromGoogle = async (data: any): Promise<User | null> => {
     }
 }
 
-const createUserFromOAuth = async (id: string) => {
-    let user: User = await prisma.user.findFirstOrThrow({ where: { id: id } });
-    return user;
-}
+// const createUserFromOAuth = async (id: string) => {
+//     let user: User = await prisma.user.findFirstOrThrow({ where: { id: id } });
+//     return user;
+// }
 
-const generateRandomString = (length: number): string => {
+export const generateRandomString = (length: number): string => {
     return crypto.randomBytes(Math.ceil(length / 2)).toString('hex').slice(0, length);
-}
-
-export {
-    lookupUserFromOAuth,
-    createUserFromOAuth,
-    generateInitialAdmin,
-    generateRandomString,
-    createUserFromGoogle
 }

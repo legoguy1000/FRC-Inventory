@@ -24,11 +24,15 @@ function stringToColor(string: string) {
 }
 
 function stringAvatar(name: string) {
+    let child = ""
+    if (name !== "") {
+        child = `${name.split(' ')[0][0].toLocaleUpperCase()}${name.split(' ')[1][0].toLocaleUpperCase()}`
+    }
     return {
         sx: {
             bgcolor: stringToColor(name),
         },
-        children: `${name.split(' ')[0][0].toLocaleUpperCase()}${name.split(' ')[1][0].toLocaleUpperCase()}`,
+        children: child,
     };
 }
 

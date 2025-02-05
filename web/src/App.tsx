@@ -93,7 +93,8 @@ export default function App(props: { disableCustomTheme?: boolean }) {
                 setSession({
                     user: {
                         id: decoded.id,
-                        name: decoded.full_name,
+                        name: decoded.name,
+                        email: decoded.email,
                         image: decoded.avatar,
                     },
                     admin: decoded.admin

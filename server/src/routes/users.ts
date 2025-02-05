@@ -9,25 +9,25 @@ router.get("/", async (req: JWTRequest, res: Response) => {
     const users = await prisma.user.findMany();
     res.send(users);
 });
-// router.post("/", async (req: Request, res: Response) => {
-//     const { name, owner } = req.body;
-//     const projects = await prisma.project.findMany({ where: { name: name } });
-//     if (projects.length > 0) {
-//         res.status(400).send({ error: true, message: `Project ${name} already exists. Project names muct be unique.`, data: { field: 'name' } })
-//         return;
-//     }
-//     try {
-//         await prisma.project.create({
-//             data: {
-//                 name: name,
-//                 owner: owner !== "" ? owner : null
-//             }
-//         })
-//         res.status(201).send({ error: false, message: "Project created." });
-//     } catch (error) {
-//         res.status(500).send({ error: true, message: error })
-//     }
-// });
+router.post("/", async (req: Request, res: Response) => {
+    const { email } = req.body;
+    const projects = await prisma.user.findMany({ where: { email: email } });
+    if (projects.length > 0) {
+        res.status(400).send({ error: true, message: `User account with email "${email}" already exists.`, data: { field: 'email' } })
+        return;
+    }
+    try {
+        await prisma.user.create({
+            data: {
+                email: email,
+                enabled: true,
+            }
+        })
+        res.status(201).send({ error: false, message: "User created." });
+    } catch (error) {
+        res.status(500).send({ error: true, message: error })
+    }
+});
 router.put("/:userId([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})", async (req: Request, res: Response) => {
     const userId = req.params.userId;
     try {
@@ -36,21 +36,17 @@ router.put("/:userId([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12
         res.status(400).send({ error: true, message: 'User does not exist.' })
         return;
     }
-    const { first_name, last_name, avatar, admin, enabled } = req.body;
+    const { email } = req.body;
     try {
         await prisma.user.update({
             where: {
                 id: userId
             },
             data: {
-                first_name: first_name,
-                last_name: last_name,
-                avatar: avatar,
-                admin: admin,
-                enabled: enabled,
+                email: email
             }
         })
-        res.status(200).send({ error: false, message: "Project updated." });
+        res.status(200).send({ error: false, message: "User updated." });
     } catch (error) {
         res.status(500).send({ error: true, message: error })
     }
@@ -58,7 +54,7 @@ router.put("/:userId([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12
 router.post("/:userId([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/enable", async (req: Request, res: Response) => {
     const userId = req.params.userId;
     try {
-        await prisma.project.findFirstOrThrow({ where: { id: userId } });
+        await prisma.user.findFirstOrThrow({ where: { id: userId } });
     } catch (error) {
         res.status(400).send({ error: true, message: 'User does not exist.' })
         return;
@@ -77,12 +73,16 @@ router.post("/:userId([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{1
         res.status(500).send({ error: true, message: error })
     }
 });
-router.post("/:userId([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/disable", async (req: Request, res: Response) => {
+router.post("/:userId([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/disable", async (req: JWTRequest, res: Response) => {
     const userId = req.params.userId;
     try {
-        await prisma.project.findFirstOrThrow({ where: { id: userId } });
+        await prisma.user.findFirstOrThrow({ where: { id: userId } });
     } catch (error) {
         res.status(400).send({ error: true, message: 'User does not exist.' })
+        return;
+    }
+    if (req.auth?.sub === userId) {
+        res.status(400).send({ error: true, message: 'You cannot disable yourself.' });
         return;
     }
     try {

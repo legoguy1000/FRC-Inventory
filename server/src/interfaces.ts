@@ -42,14 +42,14 @@ interface Project {
 
 interface User {
     id: string;
-    full_name: string;
-    first_name: string;
-    last_name: string;
+    name: string;
+    email: string;
     avatar: string;
     admin: boolean;
     enabled: boolean;
     createdAt: Date;
     updatedAt: Date;
+    lastLogin: Date;
 }
 
 // export { Project, Inventory, Part }

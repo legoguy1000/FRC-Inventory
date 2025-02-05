@@ -28,7 +28,7 @@ model Part {
     vendor    String
     name      String
     category  String      @default("other")
-    location  String
+    location  String      @default("")
     image_url String      @default("")
     website   String      @default("")
     inventory Inventory[]
@@ -42,8 +42,8 @@ model Inventory {
     id        String    @id @default(uuid())
     purchased DateTime
     retired   DateTime?
-    notes     String?
-    status    String?
+    notes     String    @default("")
+    status    String    @default("")
     partId    String
     projectId String?
     part      Part      @relation(fields: [partId], references: [id], onDelete: Restrict)
@@ -53,22 +53,23 @@ model Inventory {
 }
 
 model User {
-    id         String   @id @default(uuid())
-    first_name String
-    last_name  String
-    avatar     String   @default("")
-    admin      Boolean  @default(false)
-    enabled    Boolean  @default(true)
-    createdAt  DateTime @default(now())
-    updatedAt  DateTime @default(now()) @updatedAt
-    OAuth      OAuth[]
+    id        String    @id @default(uuid())
+    name      String    @default("")
+    email     String
+    avatar    String    @default("")
+    admin     Boolean   @default(false)
+    enabled   Boolean   @default(true)
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @default(now()) @updatedAt
+    lastLogin DateTime?
+    // OAuth      OAuth[]
 }
 
-model OAuth {
-    id         String   @id @default(uuid())
-    provider   String
-    providerId String
-    userId     String
-    User       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-    createdAt  DateTime @default(now())
-}
+// model OAuth {
+//     id         String   @id @default(uuid())
+//     provider   String
+//     providerId String
+//     userId     String
+//     User       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+//     createdAt  DateTime @default(now())
+// }

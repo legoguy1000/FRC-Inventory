@@ -13,7 +13,7 @@ type IWindowProps = {
     height: number;
 };
 
-type LoginProviders = "google";
+type LoginProviders = "google" | "github";
 
 const createPopup = ({
     url, title, height, width,
@@ -51,7 +51,9 @@ export default function SignIn() {
     const handleLogin = {
         google: async (code: string) => {
             return await AuthService.loginWithGoogle(code);
-            // let token: string = login.token;
+        },
+        github: async (code: string) => {
+            return await AuthService.loginWithGithub(code);
         }
     }
 
@@ -65,12 +67,16 @@ export default function SignIn() {
                 providers={authProviders}
                 signIn={async (provider, formData, callbackUrl) => {
                     try {
-                        if (provider.id === 'google') {
-                            const authUrl = `${API_ENPOINT}/auth/login/google?origin=${searchParams.get('callbackUrl')}`;
-                            setExternalWindow(createPopup({
-                                url: authUrl, title: 'OAuth Popup', width: 600, height: 400,
-                            }));
-                        }
+                        const authUrl = `${API_ENPOINT}/auth/login/${provider.id}?origin=${searchParams.get('callbackUrl')}`;
+                        setExternalWindow(createPopup({
+                            url: authUrl, title: 'OAuth Popup', width: 600, height: 400,
+                        }));
+                        // if (provider.id === 'google') {
+                        //     const authUrl = `${API_ENPOINT}/auth/login/google?origin=${searchParams.get('callbackUrl')}`;
+                        //     setExternalWindow(createPopup({
+                        //         url: authUrl, title: 'OAuth Popup', width: 600, height: 400,
+                        //     }));
+                        // }
                     } catch (error) {
                         // return {
                         //     error: error instanceof Error ? error.message : 'An error occurred',

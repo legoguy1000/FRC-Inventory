@@ -11,22 +11,38 @@ const UserService = {
             return error.response;
         }
     },
-    // addProject: async (data: { name: string, owner: string | undefined }) => {
-    //     try {
-    //         const response = await axiosHttp.post(`projects`, data);
-    //         return response.data;
-    //     } catch (error: any) {
-    //         return error.response.data;
-    //     }
-    // },
-    // editProject: async (projectId: string, data: { name: string, owner: string | undefined }) => {
-    //     try {
-    //         const response = await axiosHttp.put(`projects/${projectId}`, data);
-    //         return response.data;
-    //     } catch (error: any) {
-    //         return error.response.data;
-    //     }
-    // },
+    addUser: async (data: { email: string }) => {
+        try {
+            const response = await axiosHttp.post(`users`, data);
+            return response.data;
+        } catch (error: any) {
+            return error.response.data;
+        }
+    },
+    disableUser: async (userId: string) => {
+        try {
+            const response = await axiosHttp.post(`users/${userId}/disable`);
+            return response.data;
+        } catch (error: any) {
+            return error.response.data;
+        }
+    },
+    enableUser: async (userId: string) => {
+        try {
+            const response = await axiosHttp.post(`users/${userId}/enable`);
+            return response.data;
+        } catch (error: any) {
+            return error.response.data;
+        }
+    },
+    editUser: async (userId: string, data: { email: string }) => {
+        try {
+            const response = await axiosHttp.put(`users/${userId}`, data);
+            return response.data;
+        } catch (error: any) {
+            return error.response.data;
+        }
+    },
     // deleteProject: async (projectId: string) => {
     //     try {
     //         const response = await axiosHttp.delete(`projects/${projectId}`);

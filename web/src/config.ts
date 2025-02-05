@@ -4,6 +4,7 @@ declare const window: any;
 
 export const API_ENPOINT = window.BASE_URL;
 export const GOOGLE_OAUTH_ENABLED = window.GOOGLE_OAUTH_ENABLED;
+export const GITHUB_OAUTH_ENABLED = window.GITHUB_OAUTH_ENABLED;
 export const WEBSITE_TITLE = window.WEBSITE_TITLE;
 
 export const axiosHttp = axios.create({
