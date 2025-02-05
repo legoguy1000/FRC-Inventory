@@ -28,7 +28,6 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 import RenderAvatar from '../../components/RenderAvatar'
 import { CustomNoRowsOverlay } from '../../internals/components/CustomOverlays'
 import Chip from '@mui/material/Chip';
-import Moment from 'moment';
 
 function renderStatus(params: UserInterface) {
     if (params == null || params.enabled === undefined) {
@@ -53,7 +52,6 @@ export default function UsersHome() {
     const [editUser, setEditUser] = useState<{ id?: string, name?: string, email?: string }>();
     const [openDialog, setOpenDialog] = useState(false);
     const [editError, setEditError] = useState<{ error: boolean, message: string | undefined, data: { field: string } | undefined } | undefined>({ error: false, message: "", data: { field: "" } });
-    Moment.locale('en');
 
     const EditToolbar = (props: GridSlotProps['toolbar']) => {
         const addUserButton = () => {
