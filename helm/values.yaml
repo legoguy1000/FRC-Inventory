@@ -6,7 +6,19 @@
 nameOverride: ""
 fullnameOverride: ""
 
+authentication:
+  google:
+    enabled: true
+    clientId:
+    clientSecret:
+  github:
+    enabled: true
+    clientId:
+    clientSecret:
+
 web:
+  apiUrl: /api
+  websiteTitle: Title
   # This will set the replicaset count more information can be found here: https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/
   replicaCount: 1
 
@@ -100,6 +112,7 @@ web:
   affinity: {}
 
 server:
+  jwtSecretKey:
   # This will set the replicaset count more information can be found here: https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/
   replicaCount: 1
 
@@ -154,11 +167,11 @@ server:
   # This is to setup the liveness and readiness probes more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
   livenessProbe:
     httpGet:
-      path: /
+      path: /ready
       port: http
   readinessProbe:
     httpGet:
-      path: /
+      path: /ready
       port: http
 
   # Additional volumes on the output Deployment definition.

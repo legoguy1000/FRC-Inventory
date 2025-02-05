@@ -1,32 +1,63 @@
-import express, { Express, Request, Response } from "express";
+import express, { Express, Request, Response, NextFunction } from "express";
 import dotenv from "dotenv";
 import partRoutes from './routes/parts';
 import ProjectRoutes from './routes/projects';
 import InventoryRoutes from "./routes/inventory";
+import AuthRoutes from './routes/auth'
+import UserRoutes from './routes/users'
 import { prisma } from './prisma'
 import cors from "cors";
-
+import session from 'express-session';
+import { expressjwt, Request as JWTRequest } from "express-jwt";
+import { JWT_SECRET_KEY, SERVER_PORT, pathRegex } from './config'
 
 dotenv.config();
 
 const app: Express = express();
-const port = process.env.PORT || 3000;
-
-// sequelize.sync({ force: true });
-
 
 app.use(express.json());
 app.use(express.urlencoded());
 app.use(cors());
+app.use(session({ secret: 'keyboard cat', cookie: { maxAge: 60000, secure: false } }))
+app.use(expressjwt({
+    secret: JWT_SECRET_KEY,
+    algorithms: ["HS256"],
+    credentialsRequired: true,
+    getToken: function fromHeaderOrQuerystring(req) {
+        if (
+            req.headers.authorization &&
+            req.headers.authorization.split(" ")[0] === "Bearer"
+        ) {
+            return req.headers.authorization.split(" ")[1] as string;
+        } else if (req.query && req.query.token) {
+            return req.query.token as string;
+        }
+        return "";
+    },
+}).unless({
+    path: [
+        pathRegex('/auth{/*path}'),
+        pathRegex('/ready')
+    ]
+}));
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+    if (err.name === 'UnauthorizedError') {
+        res.status(401).send({
+            error: true,
+            message: 'No token provided.'
+        });
+    }
+});
+app.get('/ready', async (req, res) => {
+    try {
+        await prisma.$queryRaw`SELECT 1`;
+        res.status(200).send('OK');
+    } catch (error) {
+        res.status(500).send('Not Ready');
+    }
+});
 app.get("/", async (req: Request, res: Response) => {
     res.send("Express + TypeScript Server");
-    const user = await prisma.user.create({
-        data: {
-            first_name: "asdfadf",
-            last_name: "adr829@amco.com"
-        }
-    });
-    console.log(user);
     try {
         const part = await prisma.part.create({
             data: {
@@ -77,7 +108,9 @@ app.get("/", async (req: Request, res: Response) => {
 app.use('/parts', partRoutes);
 app.use('/projects', ProjectRoutes);
 app.use('/inventory', InventoryRoutes);
+app.use('/users', UserRoutes);
+app.use('/auth', AuthRoutes);
 
-app.listen(port, () => {
-    console.log(`[server]: Server is running at http://localhost:${port}`);
+app.listen(SERVER_PORT, () => {
+    console.log(`[server]: Server is running at http://localhost:${SERVER_PORT}`);
 });

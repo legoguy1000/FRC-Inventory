@@ -40,5 +40,17 @@ interface Project {
     }
 }
 
+interface User {
+    id: string;
+    name: string;
+    email: string;
+    avatar: string;
+    admin: boolean;
+    enabled: boolean;
+    createdAt: Date;
+    updatedAt: Date;
+    lastLogin: Date;
+}
+
 // export { Project, Inventory, Part }
-export type { Project, Inventory, Part };
+export type { Project, Inventory, Part, User };
